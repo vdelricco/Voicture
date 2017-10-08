@@ -36,8 +36,6 @@ class MainActivity : AppCompatActivity() {
         if (cleanStack) {
             clearBackStack()
         }
-        ft.setCustomAnimations(
-                R.anim.abc_fade_in, R.anim.abc_fade_out, R.anim.abc_popup_enter, R.anim.abc_popup_exit)
         ft.replace(R.id.fragment_container, f)
         ft.addToBackStack(null)
         ft.commit()
