@@ -18,7 +18,7 @@ class AudioRecordingManager : MediaRecorder.OnErrorListener, MediaRecorder.OnInf
         if (state != RecordingState.RECORDING) {
             recorder = MediaRecorder()
 
-            recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION)
             recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
             recorder.setOutputFile(file.absolutePath)
