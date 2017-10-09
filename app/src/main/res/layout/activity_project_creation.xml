@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
+    <com.delricco.vince.voicture.ui.views.DisableableViewPager
         android:id="@+id/imageViewer"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -29,5 +29,32 @@
         android:layout_height="48dp"
         android:background="@android:color/holo_blue_light"
         app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/recordingOnOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@android:drawable/ic_btn_speak_now"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/playAudio"
+        app:layout_constraintTop_toTopOf="@id/indicator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.7"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/playAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:src="@android:drawable/ic_media_play"
+        app:layout_constraintStart_toEndOf="@id/recordingOnOff"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/indicator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.7"/>
 
 </android.support.constraint.ConstraintLayout>
