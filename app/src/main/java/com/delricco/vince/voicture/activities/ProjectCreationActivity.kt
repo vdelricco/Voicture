@@ -14,12 +14,12 @@ import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import kotlinx.android.synthetic.main.activity_project_creation.*
 import java.io.File
-import java.util.*
 
 class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
     private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
     private val audioRecordingManager by lazy { AudioRecordingManager() }
     private val voictureProjectPacker by lazy { SimpleVoictureProjectPacker() }
+    private val mediaPlayer by lazy { MediaPlayer() }
     private val voictureProject = ArrayList<Voicture>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +65,8 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
                 playAudio.visibility = View.VISIBLE
             }
 
-    private fun onPlayAudioButtonClicked() = MediaPlayer().apply {
+    private fun onPlayAudioButtonClicked() = mediaPlayer.apply {
+        reset()
         setDataSource(currentVoicture().getAudioFile()?.absolutePath)
         prepare()
         start()
