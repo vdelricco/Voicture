@@ -16,11 +16,6 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
     private val mediaPlayer by lazy { MediaPlayer() }
     private val voictureProjectUnpacker by lazy { SimpleVoictureProjectUnpacker() }
     private lateinit var voictureProject: ArrayList<Voicture>
-    private var finishedPlaybackRunnable = Runnable { finish() }
-    private var nextVoictureRunnable = Runnable {
-        imageViewer.currentItem++
-        nextVoicture()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +27,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        handler.removeCallbacks(finishedPlaybackRunnable, nextVoictureRunnable)
+        handler.removeCallbacksAndMessages(null)
         super.onPause()
     }
 
@@ -54,9 +49,12 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
         // TODO: Obvious
         val arbitraryTime = 5000L
         if (imageViewer.currentItem == voictureProject.size - 1) {
-            handler.postDelayed(finishedPlaybackRunnable, arbitraryTime)
+            handler.postDelayed( { finish() }, arbitraryTime)
         } else {
-            handler.postDelayed(nextVoictureRunnable, arbitraryTime)
+            handler.postDelayed({
+                imageViewer.currentItem++
+                nextVoicture()
+            }, arbitraryTime)
         }
     }
 }
