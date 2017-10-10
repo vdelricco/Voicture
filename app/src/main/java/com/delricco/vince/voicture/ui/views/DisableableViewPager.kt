@@ -10,18 +10,10 @@ class DisableableViewPager(context: Context, attrs: AttributeSet) : ViewPager(co
     fun setPagingEnabled(enabled: Boolean) { pagingEnabled = enabled }
 
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
-        return if (pagingEnabled) {
-            super.onTouchEvent(ev)
-        } else {
-            false
-        }
+        return pagingEnabled && super.onTouchEvent(ev)
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        return if (pagingEnabled) {
-            super.onInterceptTouchEvent(ev)
-        } else {
-            false
-        }
+        return pagingEnabled && super.onInterceptTouchEvent(ev)
     }
 }
