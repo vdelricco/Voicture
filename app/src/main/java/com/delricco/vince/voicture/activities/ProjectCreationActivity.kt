@@ -71,10 +71,10 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     private fun getSelectedImageUriListFromIntent() : ArrayList<Uri> {
         if (intent.extras == null || !intent.extras.containsKey("SelectedImageUriList")) {
             throw IllegalArgumentException("Must send SelectedImageUriList to ProjectCreationActivity")
-        } else if ((intent.extras.get("SelectedImageUriList") as ArrayList<Uri>).isEmpty()) {
+        } else if ((intent.extras.getParcelableArrayList<Uri>("SelectedImageUriList")).isEmpty()) {
             throw IllegalArgumentException("Image Uri list must contain at least one Uri")
         } else {
-            return intent.extras.get("SelectedImageUriList") as ArrayList<Uri>
+            return intent.extras.getParcelableArrayList<Uri>("SelectedImageUriList")
         }
     }
 }
