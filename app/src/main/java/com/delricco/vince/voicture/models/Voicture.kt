@@ -9,6 +9,6 @@ class Voicture(imageUri: Uri) {
 
     fun getImageUri() : Uri = imageUri
     fun hasAudio() : Boolean = audioFile != null
-    fun setAudioFile(file : File) { audioFile = file }
+    fun setAudioFile(file : File?) { audioFile = file }
     fun getAudioFile() : File? = audioFile
 }

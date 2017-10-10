@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ProjectCreationActivity" />
+        <activity android:name=".activities.PreviewVoictureProjectActivity" />
     </application>
 
 </manifest>

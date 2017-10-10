@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.activities.ProjectCreationActivity
+import com.delricco.vince.voicture.intents.IntentKeys.Companion.SELECTED_IMAGE_URI_LIST
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.fragment_create_project.*
 
@@ -42,7 +43,7 @@ class CreateProjectFragment : Fragment() {
             }
 
             val createProjectIntent = Intent(activity, ProjectCreationActivity::class.java)
-            createProjectIntent.putExtra("SelectedImageUriList", selectedImageUriList)
+            createProjectIntent.putParcelableArrayListExtra(SELECTED_IMAGE_URI_LIST, selectedImageUriList)
             activity.startActivity(createProjectIntent)
         }
     }

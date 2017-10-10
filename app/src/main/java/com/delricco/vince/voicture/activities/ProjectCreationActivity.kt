@@ -8,15 +8,19 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.audio.AudioRecordingManager
+import com.delricco.vince.voicture.intents.IntentKeys
+import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import kotlinx.android.synthetic.main.activity_project_creation.*
 import java.io.File
+import java.util.*
 
 class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
-    private val selectedImageUriList : ArrayList<Uri> by lazy { getSelectedImageUriListFromIntent() }
-    private val audioRecordingManager : AudioRecordingManager by lazy { AudioRecordingManager() }
-    private val voictureList = ArrayList<Voicture>()
+    private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
+    private val audioRecordingManager by lazy { AudioRecordingManager() }
+    private val voictureProjectPacker by lazy { SimpleVoictureProjectPacker() }
+    private val voictureProject = ArrayList<Voicture>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +30,8 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         indicator.setViewPager(imageViewer)
         recordingOnOff.setOnClickListener { onRecordButtonClicked() }
         playAudio.setOnClickListener { onPlayAudioButtonClicked() }
-        selectedImageUriList.mapTo(voictureList) { Voicture(it) }
+        previewVoictureProject.setOnClickListener { onPreviewVoictureProjectClicked() }
+        selectedImageUriList.mapTo(voictureProject) { Voicture(it) }
     }
 
     override fun onPageScrollStateChanged(state: Int) {
@@ -66,15 +71,21 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         start()
     }
 
-    private fun currentVoicture() = voictureList[imageViewer.currentItem]
+    private fun onPreviewVoictureProjectClicked() {
+        startActivity(voictureProjectPacker
+                .getPackedIntent(voictureProject)
+                .setClass(applicationContext, PreviewVoictureProjectActivity::class.java))
+    }
+
+    private fun currentVoicture() = voictureProject[imageViewer.currentItem]
 
     private fun getSelectedImageUriListFromIntent() : ArrayList<Uri> {
-        if (intent.extras == null || !intent.extras.containsKey("SelectedImageUriList")) {
+        if (intent.extras == null || !intent.extras.containsKey(IntentKeys.SELECTED_IMAGE_URI_LIST)) {
             throw IllegalArgumentException("Must send SelectedImageUriList to ProjectCreationActivity")
-        } else if ((intent.extras.getParcelableArrayList<Uri>("SelectedImageUriList")).isEmpty()) {
+        } else if ((intent.extras.getParcelableArrayList<Uri>(IntentKeys.SELECTED_IMAGE_URI_LIST)).isEmpty()) {
             throw IllegalArgumentException("Image Uri list must contain at least one Uri")
         } else {
-            return intent.extras.getParcelableArrayList<Uri>("SelectedImageUriList")
+            return intent.extras.getParcelableArrayList<Uri>(IntentKeys.SELECTED_IMAGE_URI_LIST)
         }
     }
 }
