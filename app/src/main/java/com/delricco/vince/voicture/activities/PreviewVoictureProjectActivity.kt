@@ -1,11 +1,11 @@
 package com.delricco.vince.voicture.activities
 
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectUnpacker
 import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_preview_voicture.*
 
 class PreviewVoictureProjectActivity : AppCompatActivity() {
     private val handler by lazy { Handler() }
-    private val mediaPlayer by lazy { MediaPlayer() }
+    private val audioPlaybackManager by lazy { AudioPlaybackManager() }
     private val voictureProjectUnpacker by lazy { SimpleVoictureProjectUnpacker() }
     private lateinit var voictureProject: ArrayList<Voicture>
 
@@ -37,14 +37,8 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
     }
 
     private fun nextVoicture() {
-        // TODO: Move this MediaPlayer business to AudioPlaybackManager or something similar
-        mediaPlayer.reset()
-        if (voictureProject[imageViewer.currentItem].getAudioFile() != null) {
-            mediaPlayer.apply {
-                setDataSource(voictureProject[imageViewer.currentItem].getAudioFile()!!.absolutePath)
-                prepare()
-                start()
-            }
+        if (voictureProject[imageViewer.currentItem].hasAudio()) {
+            audioPlaybackManager.playAudio(currentVoicture().getAudioFile()!!)
         }
         // TODO: Obvious
         val arbitraryTime = 5000L
@@ -57,4 +51,6 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
             }, arbitraryTime)
         }
     }
+
+    private fun currentVoicture() = voictureProject[imageViewer.currentItem]
 }

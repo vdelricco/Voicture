@@ -1,12 +1,12 @@
 package com.delricco.vince.voicture.activities
 
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.audio.AudioRecordingManager
 import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
@@ -18,8 +18,8 @@ import java.io.File
 class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
     private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
     private val audioRecordingManager by lazy { AudioRecordingManager() }
+    private val audioPlaybackManager by lazy { AudioPlaybackManager() }
     private val voictureProjectPacker by lazy { SimpleVoictureProjectPacker() }
-    private val mediaPlayer by lazy { MediaPlayer() }
     private val voictureProject = ArrayList<Voicture>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,12 +65,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
                 playAudio.visibility = View.VISIBLE
             }
 
-    private fun onPlayAudioButtonClicked() = mediaPlayer.apply {
-        reset()
-        setDataSource(currentVoicture().getAudioFile()?.absolutePath)
-        prepare()
-        start()
-    }
+    private fun onPlayAudioButtonClicked() = audioPlaybackManager.playAudio(currentVoicture().getAudioFile()!!)
 
     private fun onPreviewVoictureProjectClicked() {
         startActivity(voictureProjectPacker
