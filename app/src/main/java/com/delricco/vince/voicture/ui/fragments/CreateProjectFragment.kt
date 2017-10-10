@@ -36,7 +36,7 @@ class CreateProjectFragment : Fragment() {
                 Timber.d { "Adding ${data.data} to selected image uri list" }
                 selectedImageUriList.add(data.data)
             } else {
-                (0 .. (data.clipData.itemCount - 1)).mapTo(selectedImageUriList) {
+                (0..(data.clipData.itemCount - 1)).mapTo(selectedImageUriList) {
                     Timber.d { "Adding ${data.clipData.getItemAt(it).uri} to selected image uri list" }
                     data.clipData.getItemAt(it).uri
                 }
@@ -48,7 +48,7 @@ class CreateProjectFragment : Fragment() {
         }
     }
 
-    private fun getPickImagesIntent() : Intent {
+    private fun getPickImagesIntent(): Intent {
         val pickImagesIntent = Intent()
         pickImagesIntent.apply {
             type = "image/*"

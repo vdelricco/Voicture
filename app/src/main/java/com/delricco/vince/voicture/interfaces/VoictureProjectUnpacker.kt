@@ -4,5 +4,5 @@ import android.content.Intent
 import com.delricco.vince.voicture.models.Voicture
 
 interface VoictureProjectUnpacker {
-    fun unpackFromIntent(intent: Intent) : ArrayList<Voicture>
+    fun unpackFromIntent(intent: Intent): ArrayList<Voicture>
 }

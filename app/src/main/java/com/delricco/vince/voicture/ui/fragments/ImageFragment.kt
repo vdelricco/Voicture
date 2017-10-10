@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_image.*
 
 class ImageFragment : Fragment() {
     companion object {
-        fun instance(uri: Uri) : ImageFragment {
+        fun instance(uri: Uri): ImageFragment {
             val imageFragment = ImageFragment()
             val imageUriBundle = Bundle()
             imageUriBundle.putString("ImageUri", uri.toString())
@@ -27,7 +27,7 @@ class ImageFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(arguments.getString("ImageUri").isNullOrEmpty()) {
+        if (arguments.getString("ImageUri").isNullOrEmpty()) {
             throw IllegalArgumentException("Must provide ImageUri")
         }
         Picasso.with(context)

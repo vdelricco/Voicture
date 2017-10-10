@@ -79,7 +79,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
 
     private fun currentVoicture() = voictureProject[imageViewer.currentItem]
 
-    private fun getSelectedImageUriListFromIntent() : ArrayList<Uri> {
+    private fun getSelectedImageUriListFromIntent(): ArrayList<Uri> {
         if (intent.extras == null || !intent.extras.containsKey(IntentKeys.SELECTED_IMAGE_URI_LIST)) {
             throw IllegalArgumentException("Must send SelectedImageUriList to ProjectCreationActivity")
         } else if ((intent.extras.getParcelableArrayList<Uri>(IntentKeys.SELECTED_IMAGE_URI_LIST)).isEmpty()) {

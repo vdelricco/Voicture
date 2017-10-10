@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -44,7 +43,7 @@
         app:layout_constraintEnd_toStartOf="@id/recordingOnOff"
         app:layout_constraintTop_toTopOf="@id/indicator"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.7"/>
+        app:layout_constraintVertical_bias="0.7" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/recordingOnOff"
@@ -57,7 +56,7 @@
         app:layout_constraintEnd_toStartOf="@id/playAudio"
         app:layout_constraintTop_toTopOf="@id/indicator"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.7"/>
+        app:layout_constraintVertical_bias="0.7" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/playAudio"
@@ -71,6 +70,6 @@
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/indicator"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.7"/>
+        app:layout_constraintVertical_bias="0.7" />
 
 </android.support.constraint.ConstraintLayout>

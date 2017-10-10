@@ -14,7 +14,7 @@ class AudioRecordingManager : MediaRecorder.OnErrorListener, MediaRecorder.OnInf
         STOPPED
     }
 
-    fun startRecording(file : File) {
+    fun startRecording(file: File) {
         if (state != RecordingState.RECORDING) {
             recorder = MediaRecorder()
 
@@ -55,7 +55,7 @@ class AudioRecordingManager : MediaRecorder.OnErrorListener, MediaRecorder.OnInf
     }
 
     override fun onError(mr: MediaRecorder?, what: Int, extra: Int) {
-        Timber.d {"$this.javaClass.simpleName: Error $what" }
+        Timber.d { "$this.javaClass.simpleName: Error $what" }
     }
 
 }
