@@ -32,6 +32,8 @@ class ImageFragment : Fragment() {
         }
         Picasso.with(context)
                 .load(arguments.getString("ImageUri"))
+                .fit()
+                .centerInside()
                 .into(imageView)
     }
 }
