@@ -42,7 +42,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        if (currentVoicture().hasAudio()) {
+        if (currentVoicture().audioFile != null) {
             playAudio.visibility = View.VISIBLE
         } else {
             playAudio.visibility = View.GONE
@@ -55,10 +55,10 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     private fun onRecordButtonClicked() =
             if (audioRecordingManager.getState() == AudioRecordingManager.RecordingState.STOPPED) {
                 val audioFile = File(filesDir.absolutePath + "${File.separator}${System.currentTimeMillis()}.mp4")
-                if (currentVoicture().hasAudio()) {
-                    currentVoicture().getAudioFile()?.delete()
+                if (currentVoicture().audioFile != null) {
+                    currentVoicture().audioFile!!.delete()
                 }
-                currentVoicture().setAudioFile(audioFile)
+                currentVoicture().audioFile = audioFile
                 audioRecordingManager.startRecording(audioFile)
                 recordingOnOff.setImageResource(android.R.drawable.ic_media_pause)
                 imageViewer.setPagingEnabled(false)
@@ -69,7 +69,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
                 playAudio.visibility = View.VISIBLE
             }
 
-    private fun onPlayAudioButtonClicked() = audioPlaybackManager.playAudio(currentVoicture().getAudioFile()!!)
+    private fun onPlayAudioButtonClicked() = audioPlaybackManager.playAudio(currentVoicture().audioFile!!)
 
     private fun onPreviewVoictureProjectClicked() {
         startActivity(voictureProjectPacker

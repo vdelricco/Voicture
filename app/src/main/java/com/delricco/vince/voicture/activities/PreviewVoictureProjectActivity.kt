@@ -25,7 +25,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
         setContentView(R.layout.activity_preview_voicture)
         VoictureApplication.audioComponent.inject(this)
         voictureProject = voictureProjectUnpacker.unpackFromIntent(intent)
-        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.map { it.getImageUri() } as ArrayList<Uri>)
+        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.map { it.imageUri } as ArrayList<Uri>)
         imageViewer.setPagingEnabled(false)
         startVoictureProjectPlayback()
     }
@@ -41,8 +41,8 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
     }
 
     private fun nextVoicture() {
-        if (voictureProject[imageViewer.currentItem].hasAudio()) {
-            audioPlaybackManager.playAudio(currentVoicture().getAudioFile()!!)
+        if (currentVoicture().audioFile != null) {
+            audioPlaybackManager.playAudio(currentVoicture().audioFile!!)
         }
         // TODO: Obvious
         val arbitraryTime = 5000L

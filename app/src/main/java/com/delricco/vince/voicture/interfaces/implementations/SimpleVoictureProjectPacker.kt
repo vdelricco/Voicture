@@ -13,8 +13,8 @@ class SimpleVoictureProjectPacker : VoictureProjectPacker {
         val imageUriList = ArrayList<Uri>()
         val audioFileList = ArrayList<File?>()
         voictureArrayList.forEach {
-            imageUriList.add(it.getImageUri())
-            audioFileList.add(it.getAudioFile())
+            imageUriList.add(it.imageUri)
+            audioFileList.add(it.audioFile)
         }
         intent.putParcelableArrayListExtra(IntentKeys.VOICTURE_IMAGE_URI_LIST, imageUriList)
         intent.putExtra(IntentKeys.VOICTURE_AUDIO_FILE_LIST, audioFileList)

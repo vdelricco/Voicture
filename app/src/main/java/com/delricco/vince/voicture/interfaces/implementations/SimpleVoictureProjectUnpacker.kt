@@ -20,8 +20,7 @@ class SimpleVoictureProjectUnpacker : VoictureProjectUnpacker {
         } else {
             val voictureArrayList = ArrayList<Voicture>()
             imageUriList.forEachIndexed { i, uri ->
-                val voicture = Voicture(uri)
-                voicture.setAudioFile(audioFileList[i])
+                val voicture = Voicture(uri, audioFileList[i])
                 voictureArrayList.add(voicture)
             }
             return voictureArrayList
