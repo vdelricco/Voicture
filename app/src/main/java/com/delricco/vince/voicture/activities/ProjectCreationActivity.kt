@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.audio.AudioRecordingManager
 import com.delricco.vince.voicture.intents.IntentKeys
@@ -14,17 +15,20 @@ import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import kotlinx.android.synthetic.main.activity_project_creation.*
 import java.io.File
+import javax.inject.Inject
 
 class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
+    @Inject protected lateinit var audioRecordingManager: AudioRecordingManager
+    @Inject protected lateinit var audioPlaybackManager: AudioPlaybackManager
+
     private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
-    private val audioRecordingManager by lazy { AudioRecordingManager() }
-    private val audioPlaybackManager by lazy { AudioPlaybackManager() }
     private val voictureProjectPacker by lazy { SimpleVoictureProjectPacker() }
     private val voictureProject = ArrayList<Voicture>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_creation)
+        VoictureApplication.audioComponent.inject(this)
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, selectedImageUriList)
         imageViewer.addOnPageChangeListener(this)
         indicator.setViewPager(imageViewer)
