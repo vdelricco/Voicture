@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.activities.ProjectCreationActivity
 import com.delricco.vince.voicture.intents.IntentKeys.Companion.SELECTED_IMAGE_URI_LIST
+import com.delricco.vince.voicture.intents.Intents
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.fragment_create_project.*
 
@@ -24,7 +25,9 @@ class CreateProjectFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        createNewProjectCard.setOnClickListener { startActivityForResult(Intent.createChooser(getPickImagesIntent(), "Select Picture"), PICK_IMAGES) }
+        createNewProjectCard.setOnClickListener {
+            startActivityForResult(Intent.createChooser(Intents.CHOOSE_MULTIPLE_PHOTOS, "Select Pictures"), PICK_IMAGES)
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -32,29 +35,21 @@ class CreateProjectFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGES && resultCode == AppCompatActivity.RESULT_OK && data != null) {
             val selectedImageUriList = ArrayList<Uri>()
-            if (data.data != null) {
-                Timber.d { "Adding ${data.data} to selected image uri list" }
-                selectedImageUriList.add(data.data)
-            } else {
-                (0..(data.clipData.itemCount - 1)).mapTo(selectedImageUriList) {
+            when {
+                data.data != null -> {
+                    Timber.d { "Adding ${data.data} to selected image uri list" }
+                    selectedImageUriList.add(data.data)
+                }
+                data.clipData != null -> (0..(data.clipData.itemCount - 1)).mapTo(selectedImageUriList) {
                     Timber.d { "Adding ${data.clipData.getItemAt(it).uri} to selected image uri list" }
                     data.clipData.getItemAt(it).uri
                 }
+                else -> return
             }
 
             val createProjectIntent = Intent(activity, ProjectCreationActivity::class.java)
             createProjectIntent.putParcelableArrayListExtra(SELECTED_IMAGE_URI_LIST, selectedImageUriList)
             activity.startActivity(createProjectIntent)
         }
-    }
-
-    private fun getPickImagesIntent(): Intent {
-        val pickImagesIntent = Intent()
-        pickImagesIntent.apply {
-            type = "image/*"
-            action = Intent.ACTION_GET_CONTENT
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        }
-        return pickImagesIntent
     }
 }
