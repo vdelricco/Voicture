@@ -4,12 +4,14 @@ import android.content.Intent
 
 class Intents {
     companion object {
-        val CHOOSE_MULTIPLE_PHOTOS = object: Intent() {
-            init {
+        fun chooseMultiplePhotos(): Intent {
+            val intent = Intent()
+            intent.apply {
                 type = "image/*"
                 action = Intent.ACTION_GET_CONTENT
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             }
+            return intent
         }
     }
 }
