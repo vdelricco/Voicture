@@ -1,7 +1,11 @@
 package com.delricco.vince.voicture.activities
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -13,11 +17,16 @@ import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
+import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.activity_project_creation.*
 import java.io.File
 import javax.inject.Inject
 
 class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
+    companion object {
+        val RECORD_AUDIO_PERMISSION_REQUEST_CODE = 1
+    }
+
     @Inject protected lateinit var audioRecordingManager: AudioRecordingManager
     @Inject protected lateinit var audioPlaybackManager: AudioPlaybackManager
 
@@ -52,7 +61,17 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     override fun onPageSelected(position: Int) {
     }
 
-    private fun onRecordButtonClicked() =
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == RECORD_AUDIO_PERMISSION_REQUEST_CODE) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onRecordButtonClicked()
+            }
+        }
+    }
+
+    private fun onRecordButtonClicked() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             if (audioRecordingManager.getState() == AudioRecordingManager.RecordingState.STOPPED) {
                 val audioFile = File(filesDir.absolutePath + "${File.separator}${System.currentTimeMillis()}.mp4")
                 if (currentVoicture().audioFile != null) {
@@ -68,6 +87,10 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
                 imageViewer.setPagingEnabled(true)
                 playAudio.visibility = View.VISIBLE
             }
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), RECORD_AUDIO_PERMISSION_REQUEST_CODE)
+        }
+    }
 
     private fun onPlayAudioButtonClicked() = audioPlaybackManager.playAudio(currentVoicture().audioFile!!)
 
@@ -81,11 +104,15 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
 
     private fun getSelectedImageUriListFromIntent(): ArrayList<Uri> {
         if (intent.extras == null || !intent.extras.containsKey(IntentKeys.SELECTED_IMAGE_URI_LIST)) {
-            throw IllegalArgumentException("Must send SelectedImageUriList to ProjectCreationActivity")
+            Timber.e { "Must send SelectedImageUriList to ProjectCreationActivity" }
+            finish()
         } else if ((intent.extras.getParcelableArrayList<Uri>(IntentKeys.SELECTED_IMAGE_URI_LIST)).isEmpty()) {
-            throw IllegalArgumentException("Image Uri list must contain at least one Uri")
+            Timber.e { "Image Uri list must contain at least one Uri" }
+            finish()
         } else {
             return intent.extras.getParcelableArrayList<Uri>(IntentKeys.SELECTED_IMAGE_URI_LIST)
         }
+
+        return arrayListOf()
     }
 }
