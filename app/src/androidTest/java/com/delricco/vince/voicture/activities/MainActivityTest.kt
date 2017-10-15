@@ -8,7 +8,9 @@ import android.content.Intent
 import android.content.Intent.ACTION_CHOOSER
 import android.content.Intent.EXTRA_TITLE
 import android.net.Uri
+import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.intent.Intents
@@ -22,6 +24,7 @@ import android.support.test.rule.ActivityTestRule
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.intents.IntentKeys.Companion.SELECTED_IMAGE_URI_LIST
 import org.hamcrest.CoreMatchers.allOf
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,6 +46,12 @@ class MainActivityTest {
     @Test
     fun toolbarIsVisible() {
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()))
+    }
+
+    @Test(expected = NoActivityResumedException::class)
+    fun onBackPressedClosesActivity() {
+        Espresso.pressBack()
+        assertTrue(activityRule.activity.isFinishing)
     }
 
     @Test

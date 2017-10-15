@@ -2,7 +2,6 @@ package com.delricco.vince.voicture.activities
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -15,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        changeFragment(CreateProjectFragment())
+        changeFragment(CreateProjectFragment(), false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -31,21 +30,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun changeFragment(f: Fragment, cleanStack: Boolean = false) {
-        val ft = supportFragmentManager.beginTransaction()
-        if (cleanStack) {
-            clearBackStack()
-        }
-        ft.replace(R.id.fragment_container, f)
-        ft.addToBackStack(null)
-        ft.commit()
-    }
-
-    private fun clearBackStack() {
-        val manager = supportFragmentManager
-        if (manager.backStackEntryCount > 0) {
-            val first = manager.getBackStackEntryAt(0)
-            manager.popBackStack(first.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
+    private fun changeFragment(f: Fragment, addToBackStack: Boolean) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment_container, f)
+            if (addToBackStack) {
+                addToBackStack(null)
+            }
+        }.commit()
     }
 }
