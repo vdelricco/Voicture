@@ -47,7 +47,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
         // TODO: Obvious
         val arbitraryTime = 5000L
         if (imageViewer.currentItem == voictureProject.size - 1) {
-            handler.postDelayed( { finish() }, arbitraryTime)
+            handler.postDelayed({ finish() }, arbitraryTime)
         } else {
             handler.postDelayed({
                 imageViewer.currentItem++

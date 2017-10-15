@@ -1,4 +1,4 @@
-package com.delricco.vince.voicture
+package com.delricco.vince.voicture.activities
 
 import android.app.Activity.RESULT_OK
 import android.app.Instrumentation
@@ -19,8 +19,7 @@ import android.support.test.espresso.intent.matcher.IntentMatchers.*
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
-import com.delricco.vince.voicture.activities.MainActivity
-import com.delricco.vince.voicture.activities.ProjectCreationActivity
+import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.intents.IntentKeys.Companion.SELECTED_IMAGE_URI_LIST
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Rule
