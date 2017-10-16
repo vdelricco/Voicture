@@ -34,7 +34,6 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
 
     @Inject protected lateinit var audioRecordingManager: AudioRecordingManager
     @Inject protected lateinit var audioPlaybackManager: AudioPlaybackManager
-    @Inject protected lateinit var savedProjectPrefs: SavedProject
 
     private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
     private val voictureProjectPacker by lazy { SimpleVoictureProjectPacker() }
@@ -44,7 +43,6 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_creation)
         VoictureApplication.audioComponent.inject(this)
-        VoictureApplication.sharedPrefsComponent.inject(this)
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, selectedImageUriList)
         imageViewer.addOnPageChangeListener(this)
         indicator.setViewPager(imageViewer)
@@ -94,7 +92,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     }
 
     private fun saveCurrentProject() {
-        savedProjectPrefs.saveProject(VoictureProject(voictureProject, "Test"))
+        SavedProject(applicationContext).saveProject(VoictureProject(voictureProject, "Test"))
     }
 
     private fun onRecordButtonClicked() {
