@@ -8,8 +8,10 @@ import android.content.Intent
 import android.content.Intent.ACTION_CHOOSER
 import android.content.Intent.EXTRA_TITLE
 import android.net.Uri
+import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
@@ -18,12 +20,15 @@ import android.support.test.espresso.intent.Intents.intended
 import android.support.test.espresso.intent.Intents.intending
 import android.support.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
 import android.support.test.espresso.intent.matcher.IntentMatchers.*
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
+import android.support.test.espresso.matcher.RootMatchers.withDecorView
+import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
 import com.delricco.vince.voicture.intents.IntentKeys.Companion.SELECTED_IMAGE_URI_LIST
-import org.hamcrest.CoreMatchers.allOf
+import com.delricco.vince.voicture.models.Voicture
+import com.delricco.vince.voicture.models.VoictureProject
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -46,6 +51,30 @@ class MainActivityTest {
     @Test
     fun toolbarIsVisible() {
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun onMenuOptionShowSavedClickedWhenNoSavedProjectShowsToast() {
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        onView(withText(R.string.action_show_saved)).perform(click())
+
+        onView(withText(activityRule.activity.getString(R.string.no_saved_project)
+        )).inRoot(withDecorView(not(`is`(activityRule.activity.window.decorView)))).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun onMenuOptionShowSaveClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
+        Intents.init()
+        SavedProject(InstrumentationRegistry.getTargetContext())
+                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"))), "Test"))
+
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
+        onView(withText(R.string.action_show_saved)).perform(click())
+
+        intended(hasComponent(hasClassName(PreviewVoictureProjectActivity::class.java.name)))
+
+        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
+        Intents.release()
     }
 
     @Test(expected = NoActivityResumedException::class)
