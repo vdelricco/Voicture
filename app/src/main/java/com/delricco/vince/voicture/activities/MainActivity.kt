@@ -7,15 +7,20 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
 import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.ui.fragments.CreateProjectFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+    @Inject protected lateinit var savedProjectPrefs: SavedProject
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        VoictureApplication.sharedPrefsComponent.inject(this)
         setSupportActionBar(toolbar)
         changeFragment(CreateProjectFragment(), false)
     }
@@ -29,12 +34,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_show_saved -> {
-                if (SavedProject(this).isSavedProject()) {
+                if (savedProjectPrefs.hasSavedProject()) {
                     startActivity(SimpleVoictureProjectPacker()
-                            .getPackedIntent(ArrayList(SavedProject(this).getSavedProject().data))
+                            .getPackedIntent(ArrayList(savedProjectPrefs.getSavedProject().data))
                             .setClass(applicationContext, PreviewVoictureProjectActivity::class.java))
                 } else {
-                    Toast.makeText(this, "No saved project", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.no_saved_project), Toast.LENGTH_LONG).show()
                 }
                 return true
             }
