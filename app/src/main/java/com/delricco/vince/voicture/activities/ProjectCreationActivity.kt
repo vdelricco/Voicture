@@ -8,14 +8,19 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.audio.AudioRecordingManager
+import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
 import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.models.Voicture
+import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.activity_project_creation.*
@@ -47,6 +52,22 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         selectedImageUriList.mapTo(voictureProject) { Voicture(it) }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_project_creation, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_save_project -> {
+                saveCurrentProject()
+                Toast.makeText(this, "Project saved!", Toast.LENGTH_LONG).show()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onPageScrollStateChanged(state: Int) {
     }
 
@@ -68,6 +89,10 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
                 onRecordButtonClicked()
             }
         }
+    }
+
+    private fun saveCurrentProject() {
+        SavedProject(this).saveProject(VoictureProject(voictureProject, "Test"))
     }
 
     private fun onRecordButtonClicked() {

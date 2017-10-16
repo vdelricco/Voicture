@@ -8,7 +8,7 @@ class Intents {
             val intent = Intent()
             intent.apply {
                 type = "image/*"
-                action = Intent.ACTION_GET_CONTENT
+                action = Intent.ACTION_OPEN_DOCUMENT
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             }
             return intent

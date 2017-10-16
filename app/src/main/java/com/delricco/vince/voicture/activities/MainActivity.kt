@@ -5,7 +5,10 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
+import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.ui.fragments.CreateProjectFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,7 +28,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_new_project -> true
+            R.id.action_show_saved -> {
+                if (SavedProject(this).isSavedProject()) {
+                    startActivity(SimpleVoictureProjectPacker()
+                            .getPackedIntent(ArrayList(SavedProject(this).getSavedProject().data))
+                            .setClass(applicationContext, PreviewVoictureProjectActivity::class.java))
+                } else {
+                    Toast.makeText(this, "No saved project", Toast.LENGTH_LONG).show()
+                }
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
