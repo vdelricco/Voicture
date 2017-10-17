@@ -31,6 +31,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
 
     override fun onPause() {
         handler.removeCallbacksAndMessages(null)
+        audioPlaybackManager.stop()
         super.onPause()
     }
 

@@ -55,6 +55,11 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         voictureProject = VoictureProject(voictureArrayList, "Test")
     }
 
+    override fun onPause() {
+        audioPlaybackManager.stop()
+        super.onPause()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_project_creation, menu)
         return true

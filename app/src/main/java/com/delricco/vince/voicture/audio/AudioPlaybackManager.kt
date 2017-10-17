@@ -14,4 +14,10 @@ class AudioPlaybackManager {
             start()
         }
     }
+
+    fun stop() {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+        }
+    }
 }
