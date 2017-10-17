@@ -11,7 +11,6 @@ import android.widget.Toast
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
-import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.intents.Intents
 import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.ui.fragments.CreateProjectFragment
@@ -58,9 +57,7 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
                 else -> return
             }
 
-            val createProjectIntent = Intent(this, ProjectCreationActivity::class.java)
-            createProjectIntent.putParcelableArrayListExtra(IntentKeys.SELECTED_IMAGE_URI_LIST, selectedImageUriList)
-            startActivity(createProjectIntent)
+            startActivity(Intents.createProjectIntent(selectedImageUriList, this))
         }
     }
 
@@ -72,6 +69,10 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_new_project -> {
+                createProject()
+                return true
+            }
             R.id.action_show_saved -> {
                 if (savedProjectPrefs.hasSavedProject()) {
                     startActivity(SimpleVoictureProjectPacker()
