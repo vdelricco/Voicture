@@ -3,6 +3,8 @@ package com.delricco.vince.voicture
 import android.app.Application
 import com.delricco.vince.voicture.di.components.ActivityComponent
 import com.delricco.vince.voicture.di.components.DaggerActivityComponent
+import com.delricco.vince.voicture.di.components.DaggerSharedPrefsComponent
+import com.delricco.vince.voicture.di.components.SharedPrefsComponent
 import com.delricco.vince.voicture.di.modules.SharedPrefsModule
 import com.github.ajalt.timberkt.Timber
 import com.squareup.leakcanary.LeakCanary
@@ -12,6 +14,7 @@ class VoictureApplication : Application() {
 
     companion object {
         lateinit var activityComponent: ActivityComponent
+        lateinit var sharedPrefsComponent: SharedPrefsComponent
     }
 
     override fun onCreate() {
@@ -27,5 +30,6 @@ class VoictureApplication : Application() {
                 .builder()
                 .sharedPrefsModule(SharedPrefsModule(applicationContext))
                 .build()
+        sharedPrefsComponent = DaggerSharedPrefsComponent.create()
     }
 }
