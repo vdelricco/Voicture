@@ -1,3 +1,9 @@
 package com.delricco.vince.voicture.models
 
-data class VoictureProject(val data: List<Voicture>, val name: String)
+import android.net.Uri
+
+data class VoictureProject(var data: List<Voicture>, val name: String) {
+    fun getImageUriList(): List<Uri> {
+        return data.map { it.imageUri }
+    }
+}

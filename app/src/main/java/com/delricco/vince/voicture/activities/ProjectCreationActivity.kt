@@ -38,7 +38,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
 
     private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
     private val voictureProjectPacker by lazy { SimpleVoictureProjectPacker() }
-    private val voictureProject = ArrayList<Voicture>()
+    private lateinit var voictureProject: VoictureProject
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +50,9 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         recordingOnOff.setOnClickListener { onRecordButtonClicked() }
         playAudio.setOnClickListener { onPlayAudioButtonClicked() }
         previewVoictureProject.setOnClickListener { onPreviewVoictureProjectClicked() }
-        selectedImageUriList.mapTo(voictureProject) { Voicture(it) }
+        val voictureArrayList = ArrayList<Voicture>()
+        selectedImageUriList.mapTo(voictureArrayList) { Voicture(it) }
+        voictureProject = VoictureProject(voictureArrayList, "Test")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -93,7 +95,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     }
 
     private fun saveCurrentProject() {
-        SavedProject(applicationContext).saveProject(VoictureProject(voictureProject, "Test"))
+        savedProjectPrefs.saveProject(VoictureProject(voictureProject.data, "Test"))
     }
 
     private fun onRecordButtonClicked() {
@@ -122,11 +124,11 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
 
     private fun onPreviewVoictureProjectClicked() {
         startActivity(voictureProjectPacker
-                .getPackedIntent(voictureProject)
+                .getPackedIntent(ArrayList(voictureProject.data))
                 .setClass(applicationContext, PreviewVoictureProjectActivity::class.java))
     }
 
-    private fun currentVoicture() = voictureProject[imageViewer.currentItem]
+    private fun currentVoicture() = voictureProject.data[imageViewer.currentItem]
 
     private fun getSelectedImageUriListFromIntent(): ArrayList<Uri> {
         if (intent.extras == null || !intent.extras.containsKey(IntentKeys.SELECTED_IMAGE_URI_LIST)) {

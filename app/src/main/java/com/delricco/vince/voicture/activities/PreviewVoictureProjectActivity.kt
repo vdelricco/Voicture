@@ -1,6 +1,5 @@
 package com.delricco.vince.voicture.activities
 
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -8,7 +7,7 @@ import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectUnpacker
-import com.delricco.vince.voicture.models.Voicture
+import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import kotlinx.android.synthetic.main.activity_preview_voicture.*
 import javax.inject.Inject
@@ -18,14 +17,14 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
 
     private val handler by lazy { Handler() }
     private val voictureProjectUnpacker by lazy { SimpleVoictureProjectUnpacker() }
-    private lateinit var voictureProject: ArrayList<Voicture>
+    private lateinit var voictureProject: VoictureProject
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_voicture)
         VoictureApplication.activityComponent.inject(this)
-        voictureProject = voictureProjectUnpacker.unpackFromIntent(intent)
-        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.map { it.imageUri } as ArrayList<Uri>)
+        voictureProject = VoictureProject(voictureProjectUnpacker.unpackFromIntent(intent), "Test")
+        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.getImageUriList())
         imageViewer.setPagingEnabled(false)
         startVoictureProjectPlayback()
     }
@@ -46,7 +45,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
         }
         // TODO: Obvious
         val arbitraryTime = 5000L
-        if (imageViewer.currentItem == voictureProject.size - 1) {
+        if (imageViewer.currentItem == voictureProject.data.size - 1) {
             handler.postDelayed({ finish() }, arbitraryTime)
         } else {
             handler.postDelayed({
@@ -56,5 +55,5 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
         }
     }
 
-    private fun currentVoicture() = voictureProject[imageViewer.currentItem]
+    private fun currentVoicture() = voictureProject.data[imageViewer.currentItem]
 }
