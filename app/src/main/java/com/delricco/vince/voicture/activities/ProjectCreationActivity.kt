@@ -1,6 +1,7 @@
 package com.delricco.vince.voicture.activities
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -16,9 +17,9 @@ import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.audio.AudioRecordingManager
+import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
 import com.delricco.vince.voicture.intents.IntentKeys
-import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
@@ -35,9 +36,9 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     @Inject protected lateinit var audioRecordingManager: AudioRecordingManager
     @Inject protected lateinit var audioPlaybackManager: AudioPlaybackManager
     @Inject protected lateinit var savedProjectPrefs: SavedProject
+    @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
 
     private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
-    private val voictureProjectPacker by lazy { SimpleVoictureProjectPacker() }
     private lateinit var voictureProject: VoictureProject
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,9 +129,9 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     private fun onPlayAudioButtonClicked() = audioPlaybackManager.playAudio(currentVoicture().audioFile!!)
 
     private fun onPreviewVoictureProjectClicked() {
-        startActivity(voictureProjectPacker
-                .getPackedIntent(ArrayList(voictureProject.data))
-                .setClass(applicationContext, PreviewVoictureProjectActivity::class.java))
+        val intent = Intent(applicationContext, PreviewVoictureProjectActivity::class.java)
+        intent.putExtra(IntentKeys.VOICTURE_PROJECT, voictureProjectSerDes.toJson(voictureProject))
+        startActivity(intent)
     }
 
     private fun currentVoicture() = voictureProject.data[imageViewer.currentItem]

@@ -4,9 +4,8 @@ import com.delricco.vince.voicture.BuildConfig
 
 class IntentKeys {
     companion object {
-        private val baseIntentUri = BuildConfig.APPLICATION_ID + "."
+        private val baseIntentUri = BuildConfig.APPLICATION_ID + ".intents.IntentKeys."
         val SELECTED_IMAGE_URI_LIST = baseIntentUri + "SelectedImageUriList"
-        val VOICTURE_IMAGE_URI_LIST = baseIntentUri + "VoictureImageUriList"
-        val VOICTURE_AUDIO_FILE_LIST = baseIntentUri + "VoictureAudioFileList"
+        val VOICTURE_PROJECT = baseIntentUri + "VoictureProject"
     }
 }

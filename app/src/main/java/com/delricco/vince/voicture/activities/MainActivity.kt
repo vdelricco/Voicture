@@ -10,9 +10,10 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
+import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
+import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.intents.Intents
-import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectPacker
 import com.delricco.vince.voicture.ui.fragments.CreateProjectFragment
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
     }
 
     @Inject protected lateinit var savedProjectPrefs: SavedProject
+    @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,9 +77,9 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
             }
             R.id.action_show_saved -> {
                 if (savedProjectPrefs.hasSavedProject()) {
-                    startActivity(SimpleVoictureProjectPacker()
-                            .getPackedIntent(ArrayList(savedProjectPrefs.getSavedProject().data))
-                            .setClass(applicationContext, PreviewVoictureProjectActivity::class.java))
+                    val intent = Intent(applicationContext, PreviewVoictureProjectActivity::class.java)
+                    intent.putExtra(IntentKeys.VOICTURE_PROJECT, voictureProjectSerDes.toJson(savedProjectPrefs.getSavedProject()))
+                    startActivity(intent)
                 } else {
                     Toast.makeText(this, getString(R.string.no_saved_project), Toast.LENGTH_LONG).show()
                 }

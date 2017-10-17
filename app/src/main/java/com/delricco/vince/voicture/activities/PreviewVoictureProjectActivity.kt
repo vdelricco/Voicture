@@ -6,7 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.audio.AudioPlaybackManager
-import com.delricco.vince.voicture.interfaces.implementations.SimpleVoictureProjectUnpacker
+import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
+import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import kotlinx.android.synthetic.main.activity_preview_voicture.*
@@ -14,16 +15,16 @@ import javax.inject.Inject
 
 class PreviewVoictureProjectActivity : AppCompatActivity() {
     @Inject protected lateinit var audioPlaybackManager: AudioPlaybackManager
+    @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
 
     private val handler by lazy { Handler() }
-    private val voictureProjectUnpacker by lazy { SimpleVoictureProjectUnpacker() }
     private lateinit var voictureProject: VoictureProject
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_voicture)
         VoictureApplication.activityComponent.inject(this)
-        voictureProject = VoictureProject(voictureProjectUnpacker.unpackFromIntent(intent), "Test")
+        voictureProject = voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT))
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.getImageUriList())
         imageViewer.setPagingEnabled(false)
         startVoictureProjectPlayback()
