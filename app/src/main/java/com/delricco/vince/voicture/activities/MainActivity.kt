@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        VoictureApplication.sharedPrefsComponent.inject(this)
+        VoictureApplication.activityComponent.inject(this)
         setSupportActionBar(toolbar)
         changeFragment(CreateProjectFragment(), false)
     }

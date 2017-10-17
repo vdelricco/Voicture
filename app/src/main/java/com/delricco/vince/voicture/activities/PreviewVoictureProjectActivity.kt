@@ -23,7 +23,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_voicture)
-        VoictureApplication.audioComponent.inject(this)
+        VoictureApplication.activityComponent.inject(this)
         voictureProject = voictureProjectUnpacker.unpackFromIntent(intent)
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.map { it.imageUri } as ArrayList<Uri>)
         imageViewer.setPagingEnabled(false)
