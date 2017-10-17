@@ -45,20 +45,29 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_creation)
         VoictureApplication.activityComponent.inject(this)
-        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, selectedImageUriList)
+        voictureProject = if (savedInstanceState != null && savedInstanceState.containsKey(IntentKeys.VOICTURE_PROJECT)) {
+            voictureProjectSerDes.fromJson(savedInstanceState.getString(IntentKeys.VOICTURE_PROJECT))
+        } else {
+            val voictureArrayList = ArrayList<Voicture>()
+            selectedImageUriList.mapTo(voictureArrayList) { Voicture(it) }
+            VoictureProject(voictureArrayList, "Test")
+        }
+        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.getImageUriList())
         imageViewer.addOnPageChangeListener(this)
         indicator.setViewPager(imageViewer)
         recordingOnOff.setOnClickListener { onRecordButtonClicked() }
         playAudio.setOnClickListener { onPlayAudioButtonClicked() }
         previewVoictureProject.setOnClickListener { onPreviewVoictureProjectClicked() }
-        val voictureArrayList = ArrayList<Voicture>()
-        selectedImageUriList.mapTo(voictureArrayList) { Voicture(it) }
-        voictureProject = VoictureProject(voictureArrayList, "Test")
     }
 
     override fun onPause() {
         audioPlaybackManager.stop()
         super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(IntentKeys.VOICTURE_PROJECT, voictureProjectSerDes.toJson(voictureProject))
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
