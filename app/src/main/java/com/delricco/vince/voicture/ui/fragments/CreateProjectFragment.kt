@@ -26,7 +26,7 @@ class CreateProjectFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         createNewProjectCard.setOnClickListener {
-            startActivityForResult(Intent.createChooser(Intents.chooseMultiplePhotos(), "Select Pictures"), PICK_IMAGES)
+            startActivityForResult(Intent.createChooser(Intents.CHOOSE_MULTIPLE_PHOTOS, "Select Pictures"), PICK_IMAGES)
         }
         super.onViewCreated(view, savedInstanceState)
     }
