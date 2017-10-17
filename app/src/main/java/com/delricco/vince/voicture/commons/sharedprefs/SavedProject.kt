@@ -8,7 +8,10 @@ import com.delricco.vince.voicture.models.VoictureProject
 import javax.inject.Inject
 
 class SavedProject(context: Context) {
-    private val SAVED_PROJECT_KEY = "com.delricco.vince.voicture.commons.sharedprefs.SavedProject.SAVED_PROJECT_KEY"
+    companion object {
+        private val SAVED_PROJECT_KEY = "com.delricco.vince.voicture.commons.sharedprefs.SavedProject.SAVED_PROJECT_KEY"
+    }
+
     private val sharedPrefs = context.getSharedPreferences(context.getString(R.string.saved_project_pref), Context.MODE_PRIVATE)
 
     @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
@@ -17,18 +20,8 @@ class SavedProject(context: Context) {
         VoictureApplication.sharedPrefsComponent.inject(this)
     }
 
-    fun hasSavedProject(): Boolean = (sharedPrefs.getString(SAVED_PROJECT_KEY, "") != "")
-
-    fun getSavedProject(): VoictureProject {
-        val voictureProjectJson = sharedPrefs.getString(SAVED_PROJECT_KEY, "")
-        return voictureProjectSerDes.fromJson(voictureProjectJson)
-    }
-
-    fun saveProject(project: VoictureProject) {
-        sharedPrefs.edit().putString(SAVED_PROJECT_KEY, voictureProjectSerDes.toJson(project)).apply()
-    }
-
-    fun clear() {
-        sharedPrefs.edit().clear().apply()
-    }
+    fun hasSavedProject() = sharedPrefs.getString(SAVED_PROJECT_KEY, "") != ""
+    fun getSavedProject() = voictureProjectSerDes.fromJson(sharedPrefs.getString(SAVED_PROJECT_KEY, ""))
+    fun saveProject(project: VoictureProject) = sharedPrefs.edit().putString(SAVED_PROJECT_KEY, voictureProjectSerDes.toJson(project)).apply()
+    fun clear() = sharedPrefs.edit().clear().apply()
 }
