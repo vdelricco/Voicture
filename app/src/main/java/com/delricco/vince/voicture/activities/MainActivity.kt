@@ -14,6 +14,8 @@ import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
 import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.intents.Intents
+import com.delricco.vince.voicture.models.Voicture
+import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.fragments.CreateProjectFragment
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,7 +34,9 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
         setContentView(R.layout.activity_main)
         VoictureApplication.activityComponent.inject(this)
         setSupportActionBar(toolbar)
-        changeFragment(CreateProjectFragment(), false)
+        if (savedInstanceState == null) {
+            changeFragment(CreateProjectFragment(), false)
+        }
     }
 
     override fun onProjectCreateClicked() {
@@ -59,7 +63,9 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
                 else -> return
             }
 
-            startActivity(Intents.createProjectIntent(selectedImageUriList, this))
+            startActivity(Intents.createProjectIntent(
+                    voictureProjectSerDes.toJson(
+                            VoictureProject(selectedImageUriList.map { Voicture(it) }, "Temp")), this))
         }
     }
 

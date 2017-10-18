@@ -20,7 +20,6 @@ import com.delricco.vince.voicture.audio.AudioRecordingManager
 import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
 import com.delricco.vince.voicture.intents.IntentKeys
-import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import com.github.ajalt.timberkt.Timber
@@ -38,19 +37,15 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     @Inject protected lateinit var savedProjectPrefs: SavedProject
     @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
 
-    private val selectedImageUriList by lazy { getSelectedImageUriListFromIntent() }
     private lateinit var voictureProject: VoictureProject
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_creation)
         VoictureApplication.activityComponent.inject(this)
-        voictureProject = if (savedInstanceState != null && savedInstanceState.containsKey(IntentKeys.VOICTURE_PROJECT)) {
-            voictureProjectSerDes.fromJson(savedInstanceState.getString(IntentKeys.VOICTURE_PROJECT))
-        } else {
-            val voictureArrayList = ArrayList<Voicture>()
-            selectedImageUriList.mapTo(voictureArrayList) { Voicture(it) }
-            VoictureProject(voictureArrayList, "Test")
+        if (!initVoictureProject(savedInstanceState)) {
+            finishActivityOnError("Failed to initialize voicture project")
+            return
         }
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.getImageUriList())
         imageViewer.addOnPageChangeListener(this)
@@ -58,6 +53,25 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         recordingOnOff.setOnClickListener { onRecordButtonClicked() }
         playAudio.setOnClickListener { onPlayAudioButtonClicked() }
         previewVoictureProject.setOnClickListener { onPreviewVoictureProjectClicked() }
+    }
+
+    private fun finishActivityOnError(error: String) {
+        Timber.e { error }
+        finish()
+    }
+
+    private fun initVoictureProject(savedInstanceState: Bundle?): Boolean {
+        voictureProject = if (savedInstanceState != null && savedInstanceState.containsKey(IntentKeys.VOICTURE_PROJECT)) {
+            voictureProjectSerDes.fromJson(savedInstanceState.getString(IntentKeys.VOICTURE_PROJECT))
+        } else if (intent.extras != null && intent.extras.containsKey(IntentKeys.VOICTURE_PROJECT)) {
+            voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT))
+        } else {
+            return false
+        }
+        if (voictureProject.data.isEmpty()) {
+            return false
+        }
+        return true
     }
 
     override fun onPause() {
@@ -144,18 +158,4 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     }
 
     private fun currentVoicture() = voictureProject.data[imageViewer.currentItem]
-
-    private fun getSelectedImageUriListFromIntent(): ArrayList<Uri> {
-        if (intent.extras == null || !intent.extras.containsKey(IntentKeys.SELECTED_IMAGE_URI_LIST)) {
-            Timber.e { "Must send SelectedImageUriList to ProjectCreationActivity" }
-            finish()
-        } else if ((intent.extras.getParcelableArrayList<Uri>(IntentKeys.SELECTED_IMAGE_URI_LIST)).isEmpty()) {
-            Timber.e { "Image Uri list must contain at least one Uri" }
-            finish()
-        } else {
-            return intent.extras.getParcelableArrayList<Uri>(IntentKeys.SELECTED_IMAGE_URI_LIST)
-        }
-
-        return arrayListOf()
-    }
 }

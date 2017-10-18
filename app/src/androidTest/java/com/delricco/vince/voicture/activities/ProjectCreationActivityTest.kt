@@ -12,8 +12,10 @@ import android.support.test.filters.LargeTest
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.intents.IntentKeys
-import com.delricco.vince.voicture.intents.IntentKeys.Companion.SELECTED_IMAGE_URI_LIST
+import com.delricco.vince.voicture.models.Voicture
+import com.delricco.vince.voicture.models.VoictureProject
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -36,7 +38,7 @@ class ProjectCreationActivityTest {
     @Test
     fun intentWithEmptyUriListFinishesActivity() {
         val emptyUriListIntent = Intent()
-        emptyUriListIntent.putParcelableArrayListExtra(IntentKeys.SELECTED_IMAGE_URI_LIST, arrayListOf<Uri>())
+        emptyUriListIntent.putExtra(IntentKeys.VOICTURE_PROJECT, VoictureProjectSerDes().toJson(VoictureProject(listOf(), "Test")))
 
         projectCreationActivityTestRule.launchActivity(emptyUriListIntent)
         assertTrue(projectCreationActivityTestRule.activity.isFinishing)
@@ -85,7 +87,10 @@ class ProjectCreationActivityTest {
 
     private fun launchActivityWithValidIntent() {
         val intent = Intent()
-        intent.putParcelableArrayListExtra(SELECTED_IMAGE_URI_LIST, arrayListOf(Uri.parse("uri://string")))
+        intent.putExtra(IntentKeys.VOICTURE_PROJECT,
+                VoictureProjectSerDes().toJson(
+                        VoictureProject(listOf(
+                                Voicture((Uri.parse("uri://string")))), "Test")))
         projectCreationActivityTestRule.launchActivity(intent)
     }
 }

@@ -24,8 +24,9 @@ import android.support.test.espresso.matcher.RootMatchers.withDecorView
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import com.delricco.vince.voicture.R
+import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
-import com.delricco.vince.voicture.intents.IntentKeys.Companion.SELECTED_IMAGE_URI_LIST
+import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.models.VoictureProject
 import org.hamcrest.CoreMatchers.*
@@ -103,7 +104,7 @@ class MainActivityTest {
         val validDataIntent = Intent()
         val testUri = Uri.parse("test://uri")
         validDataIntent.data = testUri
-        val expectedImageUriList = arrayListOf(testUri)
+        val expectedProjectJson = VoictureProjectSerDes().toJson(VoictureProject(listOf(Voicture(testUri)), "Temp"))
 
         intending(hasAction(ACTION_CHOOSER)).respondWith(Instrumentation.ActivityResult(RESULT_OK, validDataIntent))
         intending(hasComponent(ProjectCreationActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
@@ -114,7 +115,7 @@ class MainActivityTest {
         intended(allOf(
                 hasComponent(
                         hasClassName(ProjectCreationActivity::class.java.name)),
-                hasExtra(SELECTED_IMAGE_URI_LIST, expectedImageUriList)))
+                hasExtra(IntentKeys.VOICTURE_PROJECT, expectedProjectJson)))
 
         Intents.release()
     }
@@ -126,8 +127,9 @@ class MainActivityTest {
         val testUri1 = Uri.parse("test://uri1")
         val testUri2 = Uri.parse("test://uri2")
         val testUri3 = Uri.parse("test://uri3")
-
-        val expectedImageUriList = arrayListOf<Uri>(testUri1, testUri2, testUri3)
+        val expectedProjectJson = VoictureProjectSerDes().toJson(
+                VoictureProject(listOf(
+                        Voicture(testUri1), Voicture(testUri2), Voicture(testUri3)), "Temp"))
 
         val testClipData1 = ClipData.Item(testUri1)
         val testClipData2 = ClipData.Item(testUri2)
@@ -149,7 +151,7 @@ class MainActivityTest {
         intended(allOf(
                 hasComponent(
                         hasClassName(ProjectCreationActivity::class.java.name)),
-                hasExtra(SELECTED_IMAGE_URI_LIST, expectedImageUriList)))
+                hasExtra(IntentKeys.VOICTURE_PROJECT, expectedProjectJson)))
 
         Intents.release()
     }
