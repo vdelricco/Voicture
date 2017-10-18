@@ -39,9 +39,7 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
         }
     }
 
-    override fun onProjectCreateClicked() {
-        createProject()
-    }
+    override fun onProjectCreateClicked() = createProject()
 
     private fun createProject() {
         startActivityForResult(Intent.createChooser(Intents.CHOOSE_MULTIPLE_PHOTOS, "Select Pictures"), PICK_IMAGES)
@@ -86,6 +84,14 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
                     val intent = Intent(applicationContext, PreviewVoictureProjectActivity::class.java)
                     intent.putExtra(IntentKeys.VOICTURE_PROJECT, voictureProjectSerDes.toJson(savedProjectPrefs.getSavedProject()))
                     startActivity(intent)
+                } else {
+                    Toast.makeText(this, getString(R.string.no_saved_project), Toast.LENGTH_LONG).show()
+                }
+                return true
+            }
+            R.id.action_edit_saved -> {
+                if (savedProjectPrefs.hasSavedProject()) {
+                    startActivity(Intents.createProjectIntent(voictureProjectSerDes.toJson(savedProjectPrefs.getSavedProject()), this))
                 } else {
                     Toast.makeText(this, getString(R.string.no_saved_project), Toast.LENGTH_LONG).show()
                 }

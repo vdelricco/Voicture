@@ -3,6 +3,7 @@
     <string name="action_new_project">New Project&#8230;</string>
     <string name="action_save_project">Save Project</string>
     <string name="action_show_saved">Show Saved</string>
+    <string name="action_edit_saved">Edit Saved</string>
     <string name="no_saved_project">No saved project</string>
 
     <string name="saved_project_pref">com.delricco.vince.voicture.prefs.SAVED_PROJECT</string>

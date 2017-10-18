@@ -43,7 +43,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
 
     private fun nextVoicture() {
         if (currentVoicture().audioFile != null) {
-            audioPlaybackManager.playAudio(currentVoicture().audioFile!!)
+            audioPlaybackManager.playAudio(currentVoicture().audioFile!!).subscribe()
         }
         // TODO: Obvious
         val arbitraryTime = 5000L

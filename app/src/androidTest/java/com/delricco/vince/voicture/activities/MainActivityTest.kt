@@ -56,6 +56,7 @@ class MainActivityTest {
 
     @Test
     fun onMenuOptionShowSavedClickedWhenNoSavedProjectShowsToast() {
+        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
         onView(withText(R.string.action_show_saved)).perform(click())
 
@@ -64,7 +65,17 @@ class MainActivityTest {
     }
 
     @Test
-    fun onMenuOptionShowSaveClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
+    fun onMenuOptionEditSavedClickedWhenNoSavedProjectShowsToast() {
+        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        onView(withText(R.string.action_edit_saved)).perform(click())
+
+        onView(withText(activityRule.activity.getString(R.string.no_saved_project)
+        )).inRoot(withDecorView(not(`is`(activityRule.activity.window.decorView)))).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun onMenuOptionShowSavedClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
         Intents.init()
         SavedProject(InstrumentationRegistry.getTargetContext())
                 .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"))), "Test"))
@@ -73,6 +84,21 @@ class MainActivityTest {
         onView(withText(R.string.action_show_saved)).perform(click())
 
         intended(hasComponent(hasClassName(PreviewVoictureProjectActivity::class.java.name)))
+
+        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
+        Intents.release()
+    }
+
+    @Test
+    fun onMenuOptionEditSavedClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
+        Intents.init()
+        SavedProject(InstrumentationRegistry.getTargetContext())
+                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"))), "Test"))
+
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
+        onView(withText(R.string.action_edit_saved)).perform(click())
+
+        intended(hasComponent(hasClassName(ProjectCreationActivity::class.java.name)))
 
         SavedProject(InstrumentationRegistry.getTargetContext()).clear()
         Intents.release()
