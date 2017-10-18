@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.fragment_create_project.*
 
 class CreateProjectFragment : Fragment() {
     interface CreateProjectListener {
-       fun onProjectCreateClicked()
+        fun onProjectCreateClicked()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
