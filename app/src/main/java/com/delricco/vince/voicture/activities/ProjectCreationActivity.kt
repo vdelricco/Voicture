@@ -3,7 +3,7 @@ package com.delricco.vince.voicture.activities
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -149,7 +149,17 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
         }
     }
 
-    private fun onPlayAudioButtonClicked() = audioPlaybackManager.playAudio(currentVoicture().audioFile!!)
+    private fun onPlayAudioButtonClicked() {
+        if (audioPlaybackManager.isPlaying()) {
+            audioPlaybackManager.stop()
+            playAudio.setImageResource(android.R.drawable.ic_media_play)
+        } else {
+            audioPlaybackManager.playAudio(currentVoicture().audioFile!!, MediaPlayer.OnCompletionListener {
+                playAudio.setImageResource(android.R.drawable.ic_media_play)
+            })
+            playAudio.setImageResource(android.R.drawable.ic_media_pause)
+        }
+    }
 
     private fun onPreviewVoictureProjectClicked() {
         val intent = Intent(applicationContext, PreviewVoictureProjectActivity::class.java)

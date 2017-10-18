@@ -4,13 +4,15 @@ import android.media.MediaPlayer
 import java.io.File
 
 class AudioPlaybackManager {
+    private val emptyListener = MediaPlayer.OnCompletionListener {}
     private val mediaPlayer by lazy { MediaPlayer() }
 
-    fun playAudio(audioFile: File) {
+    fun playAudio(audioFile: File, onCompletionListener: MediaPlayer.OnCompletionListener = emptyListener) {
         mediaPlayer.apply {
             reset()
             setDataSource(audioFile.absolutePath)
             prepare()
+            setOnCompletionListener(onCompletionListener)
             start()
         }
     }
@@ -20,4 +22,6 @@ class AudioPlaybackManager {
             mediaPlayer.stop()
         }
     }
+
+    fun isPlaying() = mediaPlayer.isPlaying
 }
