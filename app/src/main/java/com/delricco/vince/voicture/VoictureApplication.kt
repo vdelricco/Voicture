@@ -5,6 +5,7 @@ import com.delricco.vince.voicture.di.components.ActivityComponent
 import com.delricco.vince.voicture.di.components.DaggerActivityComponent
 import com.delricco.vince.voicture.di.components.DaggerSharedPrefsComponent
 import com.delricco.vince.voicture.di.components.SharedPrefsComponent
+import com.delricco.vince.voicture.di.modules.FileStorageModule
 import com.delricco.vince.voicture.di.modules.SharedPrefsModule
 import com.github.ajalt.timberkt.Timber
 import com.squareup.leakcanary.LeakCanary
@@ -28,6 +29,7 @@ class VoictureApplication : Application() {
         Timber.plant(DebugTree())
         activityComponent = DaggerActivityComponent
                 .builder()
+                .fileStorageModule(FileStorageModule(applicationContext))
                 .sharedPrefsModule(SharedPrefsModule(applicationContext))
                 .build()
         sharedPrefsComponent = DaggerSharedPrefsComponent.create()

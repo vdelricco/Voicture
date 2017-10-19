@@ -18,12 +18,13 @@ import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.audio.AudioRecordingManager
 import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
+import com.delricco.vince.voicture.filestorage.FileStorageManager
 import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import com.github.ajalt.timberkt.Timber
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_project_creation.*
-import java.io.File
 import javax.inject.Inject
 
 class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
@@ -35,6 +36,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
     @Inject protected lateinit var audioPlaybackManager: AudioPlaybackManager
     @Inject protected lateinit var savedProjectPrefs: SavedProject
     @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
+    @Inject protected lateinit var fileStorageManager: FileStorageManager
 
     private lateinit var voictureProject: VoictureProject
 
@@ -103,11 +105,18 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        if (currentVoicture().audioFile != null) {
+        if (currentVoicture().hasAudio()) {
             playAudio.visibility = View.VISIBLE
         } else {
             playAudio.visibility = View.GONE
         }
+    }
+
+    override fun onBackPressed() {
+        fileStorageManager.clearTempFiles()
+                .subscribeOn(Schedulers.io())
+                .subscribe()
+        super.onBackPressed()
     }
 
     override fun onPageSelected(position: Int) {
@@ -123,18 +132,14 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
     }
 
     private fun saveCurrentProject() {
+        fileStorageManager.removeFilesFromTempList(voictureProject.getAudioFileList())
         savedProjectPrefs.saveProject(voictureProject)
     }
 
     private fun onRecordButtonClicked() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             if (audioRecordingManager.getState() == AudioRecordingManager.RecordingState.STOPPED) {
-                val audioFile = File(filesDir.absolutePath + "${File.separator}${System.currentTimeMillis()}.mp4")
-                if (currentVoicture().audioFile != null) {
-                    currentVoicture().audioFile!!.delete()
-                }
-                currentVoicture().audioFile = audioFile
-                audioRecordingManager.startRecording(audioFile)
+                audioRecordingManager.startRecording(currentVoicture().audioFile)
                 recordingOnOff.setImageResource(android.R.drawable.ic_media_pause)
                 imageViewer.setPagingEnabled(false)
             } else {
@@ -154,7 +159,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
             playAudio.setImageResource(android.R.drawable.ic_media_play)
         } else {
             audioPlaybackManager
-                    .playAudio(currentVoicture().audioFile!!)
+                    .playAudio(currentVoicture().audioFile)
                     .doOnSubscribe { playAudio.setImageResource(android.R.drawable.ic_media_pause) }
                     .doOnComplete { playAudio.setImageResource(android.R.drawable.ic_media_play) }
                     .subscribe()

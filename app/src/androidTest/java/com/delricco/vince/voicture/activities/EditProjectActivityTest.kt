@@ -3,6 +3,7 @@ package com.delricco.vince.voicture.activities
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
@@ -21,6 +22,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -90,7 +92,8 @@ class EditProjectActivityTest {
         intent.putExtra(IntentKeys.VOICTURE_PROJECT,
                 VoictureProjectSerDes().toJson(
                         VoictureProject(listOf(
-                                Voicture((Uri.parse("uri://string")))), "Test")))
+                                Voicture(Uri.parse("uri://string"),
+                                        File(InstrumentationRegistry.getTargetContext().filesDir, "test"))), "Test")))
         projectCreationActivityTestRule.launchActivity(intent)
     }
 }

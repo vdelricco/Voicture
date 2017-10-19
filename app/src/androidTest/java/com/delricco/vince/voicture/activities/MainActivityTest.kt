@@ -24,15 +24,14 @@ import android.support.test.espresso.matcher.RootMatchers.withDecorView
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import com.delricco.vince.voicture.R
-import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
-import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.models.VoictureProject
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import java.io.File
 
 class MainActivityTest {
     @Rule
@@ -57,7 +56,7 @@ class MainActivityTest {
     @Test
     fun onMenuOptionShowSavedClickedWhenNoSavedProjectShowsToast() {
         SavedProject(InstrumentationRegistry.getTargetContext()).clear()
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
         onView(withText(R.string.action_show_saved)).perform(click())
 
         onView(withText(activityRule.activity.getString(R.string.no_saved_project)
@@ -67,7 +66,7 @@ class MainActivityTest {
     @Test
     fun onMenuOptionEditSavedClickedWhenNoSavedProjectShowsToast() {
         SavedProject(InstrumentationRegistry.getTargetContext()).clear()
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
         onView(withText(R.string.action_edit_saved)).perform(click())
 
         onView(withText(activityRule.activity.getString(R.string.no_saved_project)
@@ -78,7 +77,7 @@ class MainActivityTest {
     fun onMenuOptionShowSavedClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
         Intents.init()
         SavedProject(InstrumentationRegistry.getTargetContext())
-                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"))), "Test"))
+                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"), File("test"))), "Test"))
 
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
         onView(withText(R.string.action_show_saved)).perform(click())
@@ -93,7 +92,7 @@ class MainActivityTest {
     fun onMenuOptionEditSavedClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
         Intents.init()
         SavedProject(InstrumentationRegistry.getTargetContext())
-                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"))), "Test"))
+                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"), File("test"))), "Test"))
 
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
         onView(withText(R.string.action_edit_saved)).perform(click())
@@ -130,7 +129,6 @@ class MainActivityTest {
         val validDataIntent = Intent()
         val testUri = Uri.parse("test://uri")
         validDataIntent.data = testUri
-        val expectedProjectJson = VoictureProjectSerDes().toJson(VoictureProject(listOf(Voicture(testUri)), "Temp"))
 
         intending(hasAction(ACTION_CHOOSER)).respondWith(Instrumentation.ActivityResult(RESULT_OK, validDataIntent))
         intending(hasComponent(EditProjectActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
@@ -138,10 +136,7 @@ class MainActivityTest {
         onView(withId(R.id.createNewProjectCard)).perform(click())
 
         intended(allOf(hasAction(ACTION_CHOOSER), hasExtra(EXTRA_TITLE, "Select Pictures")))
-        intended(allOf(
-                hasComponent(
-                        hasClassName(EditProjectActivity::class.java.name)),
-                hasExtra(IntentKeys.VOICTURE_PROJECT, expectedProjectJson)))
+        intended(allOf(hasComponent(hasClassName(EditProjectActivity::class.java.name))))
 
         Intents.release()
     }
@@ -153,9 +148,6 @@ class MainActivityTest {
         val testUri1 = Uri.parse("test://uri1")
         val testUri2 = Uri.parse("test://uri2")
         val testUri3 = Uri.parse("test://uri3")
-        val expectedProjectJson = VoictureProjectSerDes().toJson(
-                VoictureProject(listOf(
-                        Voicture(testUri1), Voicture(testUri2), Voicture(testUri3)), "Temp"))
 
         val testClipData1 = ClipData.Item(testUri1)
         val testClipData2 = ClipData.Item(testUri2)
@@ -174,10 +166,7 @@ class MainActivityTest {
         onView(withId(R.id.createNewProjectCard)).perform(click())
 
         intended(allOf(hasAction(ACTION_CHOOSER), hasExtra(EXTRA_TITLE, "Select Pictures")))
-        intended(allOf(
-                hasComponent(
-                        hasClassName(EditProjectActivity::class.java.name)),
-                hasExtra(IntentKeys.VOICTURE_PROJECT, expectedProjectJson)))
+        intended(allOf(hasComponent(hasClassName(EditProjectActivity::class.java.name))))
 
         Intents.release()
     }

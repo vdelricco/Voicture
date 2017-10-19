@@ -12,12 +12,14 @@ import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
 import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
+import com.delricco.vince.voicture.filestorage.FileStorageManager
 import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.intents.Intents
 import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.fragments.CreateProjectFragment
 import com.github.ajalt.timberkt.Timber
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
 
     @Inject protected lateinit var savedProjectPrefs: SavedProject
     @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
+    @Inject protected lateinit var fileStorageManager: FileStorageManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +64,24 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
                 else -> return
             }
 
-            startActivity(Intents.createProjectIntent(
-                    voictureProjectSerDes.toJson(
-                            VoictureProject(selectedImageUriList.map { Voicture(it) }, "Temp")), this))
+            val voictureArrayList = ArrayList<Voicture>()
+            var index = 0
+            var error = false
+            fileStorageManager.createTempProjectAudioFiles(selectedImageUriList.size)
+                    .doOnError { t: Throwable ->
+                        Timber.e { t.toString() }
+                        error = true
+                    }
+                    .doOnComplete {
+                        if (!error) {
+                            runOnUiThread { startActivity(Intents.createProjectIntent(voictureProjectSerDes.toJson(VoictureProject(voictureArrayList, "Temp")), this)) }
+                        }
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ file ->
+                        voictureArrayList.add(Voicture(selectedImageUriList[index], file))
+                        index++
+                    })
         }
     }
 
