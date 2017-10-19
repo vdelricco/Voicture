@@ -98,7 +98,7 @@ class MainActivityTest {
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
         onView(withText(R.string.action_edit_saved)).perform(click())
 
-        intended(hasComponent(hasClassName(ProjectCreationActivity::class.java.name)))
+        intended(hasComponent(hasClassName(EditProjectActivity::class.java.name)))
 
         SavedProject(InstrumentationRegistry.getTargetContext()).clear()
         Intents.release()
@@ -133,14 +133,14 @@ class MainActivityTest {
         val expectedProjectJson = VoictureProjectSerDes().toJson(VoictureProject(listOf(Voicture(testUri)), "Temp"))
 
         intending(hasAction(ACTION_CHOOSER)).respondWith(Instrumentation.ActivityResult(RESULT_OK, validDataIntent))
-        intending(hasComponent(ProjectCreationActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
+        intending(hasComponent(EditProjectActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
 
         onView(withId(R.id.createNewProjectCard)).perform(click())
 
         intended(allOf(hasAction(ACTION_CHOOSER), hasExtra(EXTRA_TITLE, "Select Pictures")))
         intended(allOf(
                 hasComponent(
-                        hasClassName(ProjectCreationActivity::class.java.name)),
+                        hasClassName(EditProjectActivity::class.java.name)),
                 hasExtra(IntentKeys.VOICTURE_PROJECT, expectedProjectJson)))
 
         Intents.release()
@@ -169,14 +169,14 @@ class MainActivityTest {
         validClipDataIntent.clipData = uriListClipData
 
         intending(hasAction(ACTION_CHOOSER)).respondWith(Instrumentation.ActivityResult(RESULT_OK, validClipDataIntent))
-        intending(hasComponent(ProjectCreationActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
+        intending(hasComponent(EditProjectActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
 
         onView(withId(R.id.createNewProjectCard)).perform(click())
 
         intended(allOf(hasAction(ACTION_CHOOSER), hasExtra(EXTRA_TITLE, "Select Pictures")))
         intended(allOf(
                 hasComponent(
-                        hasClassName(ProjectCreationActivity::class.java.name)),
+                        hasClassName(EditProjectActivity::class.java.name)),
                 hasExtra(IntentKeys.VOICTURE_PROJECT, expectedProjectJson)))
 
         Intents.release()

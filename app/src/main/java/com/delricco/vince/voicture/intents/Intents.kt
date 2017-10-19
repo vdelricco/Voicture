@@ -2,7 +2,7 @@ package com.delricco.vince.voicture.intents
 
 import android.content.Context
 import android.content.Intent
-import com.delricco.vince.voicture.activities.ProjectCreationActivity
+import com.delricco.vince.voicture.activities.EditProjectActivity
 
 class Intents {
     companion object {
@@ -13,7 +13,7 @@ class Intents {
         }
 
         fun createProjectIntent(voictureProjectJson: String, context: Context): Intent {
-            return Intent(context, ProjectCreationActivity::class.java).putExtra(IntentKeys.VOICTURE_PROJECT, voictureProjectJson)
+            return Intent(context, EditProjectActivity::class.java).putExtra(IntentKeys.VOICTURE_PROJECT, voictureProjectJson)
         }
     }
 }

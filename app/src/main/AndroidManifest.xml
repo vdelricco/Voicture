@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ProjectCreationActivity" />
+        <activity android:name=".activities.EditProjectActivity" />
         <activity android:name=".activities.PreviewVoictureProjectActivity" />
     </application>
 

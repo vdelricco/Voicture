@@ -1,8 +1,8 @@
 package com.delricco.vince.voicture.di.components;
 
+import com.delricco.vince.voicture.activities.EditProjectActivity
 import com.delricco.vince.voicture.activities.MainActivity
 import com.delricco.vince.voicture.activities.PreviewVoictureProjectActivity
-import com.delricco.vince.voicture.activities.ProjectCreationActivity
 import com.delricco.vince.voicture.di.modules.AudioModule
 import com.delricco.vince.voicture.di.modules.SerDesModule
 import com.delricco.vince.voicture.di.modules.SharedPrefsModule
@@ -13,6 +13,6 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(AudioModule::class, SharedPrefsModule::class, SerDesModule::class))
 interface ActivityComponent {
     fun inject(mainActivity: MainActivity)
-    fun inject(projectCreationActivity: ProjectCreationActivity)
+    fun inject(editProjectActivity: EditProjectActivity)
     fun inject(previewVoictureProjectActivity: PreviewVoictureProjectActivity)
 }

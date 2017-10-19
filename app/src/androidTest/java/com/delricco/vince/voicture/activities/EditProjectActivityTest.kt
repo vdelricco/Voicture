@@ -24,10 +24,10 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class ProjectCreationActivityTest {
+class EditProjectActivityTest {
     @Rule
     @JvmField
-    val projectCreationActivityTestRule = ActivityTestRule(ProjectCreationActivity::class.java, true, false)
+    val projectCreationActivityTestRule = ActivityTestRule(EditProjectActivity::class.java, true, false)
 
     @Test
     fun invalidIntentFinishesActivity() {

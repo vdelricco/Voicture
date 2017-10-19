@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_project_creation.*
 import java.io.File
 import javax.inject.Inject
 
-class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
+class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
     companion object {
         val RECORD_AUDIO_PERMISSION_REQUEST_CODE = 1
     }
@@ -123,7 +123,7 @@ class ProjectCreationActivity : AppCompatActivity(), ViewPager.OnPageChangeListe
     }
 
     private fun saveCurrentProject() {
-        savedProjectPrefs.saveProject(VoictureProject(voictureProject.data, "Test"))
+        savedProjectPrefs.saveProject(voictureProject)
     }
 
     private fun onRecordButtonClicked() {
