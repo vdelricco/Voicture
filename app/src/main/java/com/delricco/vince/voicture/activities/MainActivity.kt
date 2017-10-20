@@ -1,5 +1,6 @@
 package com.delricco.vince.voicture.activities
 
+import android.arch.lifecycle.Lifecycle
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,9 +20,12 @@ import com.delricco.vince.voicture.models.Voicture
 import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.fragments.CreateProjectFragment
 import com.github.ajalt.timberkt.Timber
+import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
+
+
 
 class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectListener {
     companion object {
@@ -31,6 +35,8 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
     @Inject protected lateinit var savedProjectPrefs: SavedProject
     @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
     @Inject protected lateinit var fileStorageManager: FileStorageManager
+
+    private val provider = AndroidLifecycle.createLifecycleProvider(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +74,7 @@ class MainActivity : AppCompatActivity(), CreateProjectFragment.CreateProjectLis
             var index = 0
             var error = false
             fileStorageManager.createTempProjectAudioFiles(selectedImageUriList.size)
+                    .compose(provider.bindUntilEvent(Lifecycle.Event.ON_PAUSE))
                     .doOnError { t: Throwable ->
                         Timber.e { t.toString() }
                         error = true
