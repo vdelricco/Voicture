@@ -8,10 +8,8 @@ import android.content.Intent
 import android.content.Intent.ACTION_CHOOSER
 import android.content.Intent.EXTRA_TITLE
 import android.net.Uri
-import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import android.support.test.espresso.NoActivityResumedException
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
@@ -20,18 +18,13 @@ import android.support.test.espresso.intent.Intents.intended
 import android.support.test.espresso.intent.Intents.intending
 import android.support.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
 import android.support.test.espresso.intent.matcher.IntentMatchers.*
-import android.support.test.espresso.matcher.RootMatchers.withDecorView
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import com.delricco.vince.voicture.R
-import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
-import com.delricco.vince.voicture.models.Voicture
-import com.delricco.vince.voicture.models.VoictureProject
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 
 class MainActivityTest {
     @Rule
@@ -39,68 +32,18 @@ class MainActivityTest {
     val activityRule = ActivityTestRule(MainActivity::class.java, true)
 
     @Test
-    fun createProjectFragmentIsVisible() {
+    fun displayProjectsFragmentIsVisible() {
         onView(withId(R.id.fragment_container)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun createNewProjectCardViewIsVisible() {
-        onView(withId(R.id.createNewProjectCard)).check(matches(isDisplayed()))
+    fun projectListRecyclerViewIsVisible() {
+        onView(withId(R.id.projectListRecyclerView)).check(matches(isDisplayed()))
     }
 
     @Test
     fun toolbarIsVisible() {
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun onMenuOptionShowSavedClickedWhenNoSavedProjectShowsToast() {
-        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
-        onView(withText(R.string.action_show_saved)).perform(click())
-
-        onView(withText(activityRule.activity.getString(R.string.no_saved_project)
-        )).inRoot(withDecorView(not(`is`(activityRule.activity.window.decorView)))).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun onMenuOptionEditSavedClickedWhenNoSavedProjectShowsToast() {
-        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
-        onView(withText(R.string.action_edit_saved)).perform(click())
-
-        onView(withText(activityRule.activity.getString(R.string.no_saved_project)
-        )).inRoot(withDecorView(not(`is`(activityRule.activity.window.decorView)))).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun onMenuOptionShowSavedClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
-        Intents.init()
-        SavedProject(InstrumentationRegistry.getTargetContext())
-                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"), File("test"))), "Test"))
-
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
-        onView(withText(R.string.action_show_saved)).perform(click())
-
-        intended(hasComponent(hasClassName(PreviewVoictureProjectActivity::class.java.name)))
-
-        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
-        Intents.release()
-    }
-
-    @Test
-    fun onMenuOptionEditSavedClickedWhenSavedProjectExistsOpensProjectPreviewActivity() {
-        Intents.init()
-        SavedProject(InstrumentationRegistry.getTargetContext())
-                .saveProject(VoictureProject(listOf(Voicture(Uri.parse("test://uri"), File("test"))), "Test"))
-
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
-        onView(withText(R.string.action_edit_saved)).perform(click())
-
-        intended(hasComponent(hasClassName(EditProjectActivity::class.java.name)))
-
-        SavedProject(InstrumentationRegistry.getTargetContext()).clear()
-        Intents.release()
     }
 
     @Test(expected = NoActivityResumedException::class)
@@ -110,12 +53,18 @@ class MainActivityTest {
     }
 
     @Test
+    fun onClickCreateProjectFabProjectNameDialogIsShown() {
+        onView(withId(R.id.createProjectFab)).perform(click())
+        onView(withText(R.string.choose_project_name)).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun onClickCreateNewProjectSendsPhotoChooserIntent() {
         Intents.init()
 
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
 
-        onView(withId(R.id.createNewProjectCard)).perform(click())
+        createNewProjectWithDefaultName()
 
         intended(allOf(hasAction(ACTION_CHOOSER), hasExtra(EXTRA_TITLE, "Select Pictures")))
 
@@ -133,7 +82,7 @@ class MainActivityTest {
         intending(hasAction(ACTION_CHOOSER)).respondWith(Instrumentation.ActivityResult(RESULT_OK, validDataIntent))
         intending(hasComponent(EditProjectActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
 
-        onView(withId(R.id.createNewProjectCard)).perform(click())
+        createNewProjectWithDefaultName()
 
         intended(allOf(hasAction(ACTION_CHOOSER), hasExtra(EXTRA_TITLE, "Select Pictures")))
         intended(allOf(hasComponent(hasClassName(EditProjectActivity::class.java.name))))
@@ -163,11 +112,16 @@ class MainActivityTest {
         intending(hasAction(ACTION_CHOOSER)).respondWith(Instrumentation.ActivityResult(RESULT_OK, validClipDataIntent))
         intending(hasComponent(EditProjectActivity::javaClass.name)).respondWith(Instrumentation.ActivityResult(RESULT_OK, Intent()))
 
-        onView(withId(R.id.createNewProjectCard)).perform(click())
+        createNewProjectWithDefaultName()
 
         intended(allOf(hasAction(ACTION_CHOOSER), hasExtra(EXTRA_TITLE, "Select Pictures")))
         intended(allOf(hasComponent(hasClassName(EditProjectActivity::class.java.name))))
 
         Intents.release()
+    }
+
+    private fun createNewProjectWithDefaultName() {
+        onView(withId(R.id.createProjectFab)).perform(click())
+        onView(withId(android.R.id.button1)).perform(click())
     }
 }

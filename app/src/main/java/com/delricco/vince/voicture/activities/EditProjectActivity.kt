@@ -17,7 +17,7 @@ import com.delricco.vince.voicture.VoictureApplication
 import com.delricco.vince.voicture.audio.AudioPlaybackManager
 import com.delricco.vince.voicture.audio.AudioRecordingManager
 import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
-import com.delricco.vince.voicture.commons.sharedprefs.SavedProject
+import com.delricco.vince.voicture.commons.sharedprefs.SavedProjects
 import com.delricco.vince.voicture.filestorage.FileStorageManager
 import com.delricco.vince.voicture.intents.IntentKeys
 import com.delricco.vince.voicture.models.VoictureProject
@@ -34,7 +34,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
 
     @Inject protected lateinit var audioRecordingManager: AudioRecordingManager
     @Inject protected lateinit var audioPlaybackManager: AudioPlaybackManager
-    @Inject protected lateinit var savedProjectPrefs: SavedProject
+    @Inject protected lateinit var savedProjectsPrefs: SavedProjects
     @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
     @Inject protected lateinit var fileStorageManager: FileStorageManager
 
@@ -133,7 +133,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
 
     private fun saveCurrentProject() {
         fileStorageManager.removeFilesFromTempList(voictureProject.getAudioFileList())
-        savedProjectPrefs.saveProject(voictureProject)
+        savedProjectsPrefs.saveProject(voictureProject)
     }
 
     private fun onRecordButtonClicked() {

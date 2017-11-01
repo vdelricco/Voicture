@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.delricco.vince.voicture.R
-import com.squareup.picasso.Picasso
+import com.delricco.vince.voicture.commons.extensions.loadImg
 import kotlinx.android.synthetic.main.fragment_image.*
 
 class ImageFragment : Fragment() {
@@ -27,13 +27,11 @@ class ImageFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (arguments.getString("ImageUri").isNullOrEmpty()) {
+        val imageUri = arguments.getString("ImageUri")
+        if (imageUri.isNullOrEmpty()) {
             throw IllegalArgumentException("Must provide ImageUri")
+        } else {
+            imageView.loadImg(imageUri)
         }
-        Picasso.with(context)
-                .load(arguments.getString("ImageUri"))
-                .fit()
-                .centerInside()
-                .into(imageView)
     }
 }

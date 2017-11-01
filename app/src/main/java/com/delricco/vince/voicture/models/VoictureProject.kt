@@ -1,14 +1,10 @@
 package com.delricco.vince.voicture.models
 
-import android.net.Uri
-import java.io.File
+import com.delricco.vince.voicture.ui.adapters.AdapterConstants
+import com.delricco.vince.voicture.ui.adapters.ViewType
 
-data class VoictureProject(var data: List<Voicture>, val name: String) {
-    fun getImageUriList(): List<Uri> {
-        return data.map { it.imageUri }
-    }
-
-    fun getAudioFileList(): List<File> {
-        return data.map { it.audioFile }
-    }
+data class VoictureProject(var data: List<Voicture>, val name: String) : ViewType {
+    fun getImageUriList() = data.map { it.imageUri }
+    fun getAudioFileList() = data.map { it.audioFile }
+    override fun getViewType() = AdapterConstants.PROJECT
 }
