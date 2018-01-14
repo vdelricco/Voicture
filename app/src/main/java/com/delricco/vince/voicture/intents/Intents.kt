@@ -12,8 +12,8 @@ class Intents {
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }
 
-        fun createProjectIntent(voictureProjectJson: String, context: Context): Intent {
-            return Intent(context, EditProjectActivity::class.java).putExtra(IntentKeys.VOICTURE_PROJECT, voictureProjectJson)
-        }
+        fun createProjectIntent(voictureProjectJson: String, context: Context): Intent =
+                Intent(context, EditProjectActivity::class.java)
+                        .putExtra(IntentKeys.VOICTURE_PROJECT, voictureProjectJson)
     }
 }

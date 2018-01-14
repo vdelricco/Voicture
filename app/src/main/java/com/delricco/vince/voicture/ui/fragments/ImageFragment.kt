@@ -25,9 +25,9 @@ class ImageFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_image, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val imageUri = arguments.getString("ImageUri")
+        val imageUri = arguments!!.getString("ImageUri")
         if (imageUri.isNullOrEmpty()) {
             throw IllegalArgumentException("Must provide ImageUri")
         } else {

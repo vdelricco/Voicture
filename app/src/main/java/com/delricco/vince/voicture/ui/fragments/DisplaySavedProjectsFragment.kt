@@ -22,11 +22,11 @@ class DisplaySavedProjectsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_display_saved_projects, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         projectListRecyclerView.setHasFixedSize(true)
-        projectListRecyclerView.layoutManager = LinearLayoutManager(this.activity.applicationContext)
+        projectListRecyclerView.layoutManager = LinearLayoutManager(this.activity!!.applicationContext)
         projectListRecyclerView.addItemDecoration(DividerItemDecoration(projectListRecyclerView.context, DividerItemDecoration.VERTICAL))
-        projectListRecyclerView.adapter = VoictureProjectListAdapter(activity as VoictureProjectDelegateAdapter.OnViewSelectedListener)
+        projectListRecyclerView.adapter = VoictureProjectListAdapter(this.activity as VoictureProjectDelegateAdapter.OnViewSelectedListener)
     }
 
     override fun onResume() {

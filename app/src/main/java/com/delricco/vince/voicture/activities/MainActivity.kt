@@ -122,7 +122,13 @@ class MainActivity : AppCompatActivity(),
                     }
                     .doOnComplete {
                         if (!error) {
-                            runOnUiThread { startActivity(Intents.createProjectIntent(voictureProjectSerDes.toJson(VoictureProject(voictureArrayList, projectNameToCreate)), this)) }
+                            runOnUiThread { startActivity(
+                                    Intents.createProjectIntent(
+                                            voictureProjectSerDes.toJson(
+                                                    VoictureProject(voictureArrayList,
+                                                                    projectNameToCreate)),
+                                            this))
+                            }
                         }
                     }
                     .subscribeOn(Schedulers.io())
