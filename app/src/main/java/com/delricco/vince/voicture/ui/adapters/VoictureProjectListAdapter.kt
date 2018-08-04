@@ -21,9 +21,10 @@ class VoictureProjectListAdapter(listener: VoictureProjectDelegateAdapter.OnView
     }
 
     override fun getItemCount() = items.size
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = delegateAdapters.get(viewType).onCreateViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+            delegateAdapters[viewType]!!.onCreateViewHolder(parent)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            delegateAdapters.get(getItemViewType(position)).onBindViewHolder(holder, items[position])
+            delegateAdapters[getItemViewType(position)]!!.onBindViewHolder(holder, items[position])
     override fun getItemViewType(position: Int) = items[position].getViewType()
 
     fun clearAndAddProjects(projects: List<VoictureProject>) {

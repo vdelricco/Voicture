@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(),
         alertBuilder.apply {
             setTitle(R.string.choose_project_name)
             setView(inputEditText)
-            setPositiveButton("Create", { _, _ ->
+            setPositiveButton("Create") { _, _ ->
                 val chosenName = inputEditText.text.toString()
                 if (savedProjectsPrefs.getIndexByName(chosenName) != -1) {
                     Toast.makeText(applicationContext, "Name is already taken", Toast.LENGTH_LONG).show()
@@ -79,10 +79,10 @@ class MainActivity : AppCompatActivity(),
                     projectNameToCreate = chosenName
                     sendChoosePhotosIntent()
                 }
-            })
-            setNegativeButton("Cancel" , { dialog, _ ->
+            }
+            setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
-            })
+            }
             show()
         }
     }
@@ -132,10 +132,10 @@ class MainActivity : AppCompatActivity(),
                         }
                     }
                     .subscribeOn(Schedulers.io())
-                    .subscribe({ file ->
+                    .subscribe { file ->
                         voictureArrayList.add(Voicture(selectedImageUriList[index], file))
                         index++
-                    })
+                    }
         }
     }
 
