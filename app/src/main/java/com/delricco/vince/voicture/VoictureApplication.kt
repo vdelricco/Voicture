@@ -25,8 +25,10 @@ class VoictureApplication : Application() {
             // You should not init your app in this process.
             return
         }
+
         LeakCanary.install(this)
         Timber.plant(DebugTree())
+
         activityComponent = DaggerActivityComponent
                 .builder()
                 .fileStorageModule(FileStorageModule(applicationContext))

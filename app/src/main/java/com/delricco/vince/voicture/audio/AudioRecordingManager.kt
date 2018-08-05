@@ -57,5 +57,4 @@ class AudioRecordingManager : MediaRecorder.OnErrorListener, MediaRecorder.OnInf
     override fun onError(mr: MediaRecorder?, what: Int, extra: Int) {
         Timber.d { "$this.javaClass.simpleName: Error $what" }
     }
-
 }

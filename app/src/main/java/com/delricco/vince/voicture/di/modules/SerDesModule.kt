@@ -8,7 +8,6 @@ import javax.inject.Singleton
 @Module
 class SerDesModule {
     @Provides
-    @Singleton
     fun provideVoictureProjectSerDes(): VoictureProjectSerDes {
         return VoictureProjectSerDes()
     }

@@ -8,7 +8,6 @@ import javax.inject.Singleton
 
 @Module
 class AudioModule {
-
     @Provides
     @Singleton
     fun provideAudioPlaybackManager(): AudioPlaybackManager {

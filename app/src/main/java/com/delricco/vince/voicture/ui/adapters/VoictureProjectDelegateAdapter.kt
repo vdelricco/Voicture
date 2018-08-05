@@ -19,8 +19,7 @@ class VoictureProjectDelegateAdapter(val viewSelectedListener: OnViewSelectedLis
         (holder as VoictureProjectViewHolder).bind(item as VoictureProject)
     }
 
-    inner class VoictureProjectViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-            parent.inflate(R.layout.voicture_project_item)) {
+    inner class VoictureProjectViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.voicture_project_item)) {
         private val name = itemView.projectName
         private val previewImage = itemView.previewImage
 

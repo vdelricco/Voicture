@@ -11,9 +11,11 @@ class FileStorageManager(val context: Context) {
 
     fun createTempProjectAudioFiles(numFiles: Int): Observable<File> {
         return Observable.create<File> { subscriber ->
-            repeat(numFiles, {
+            repeat(numFiles) {
                 Thread.sleep(1L)
+
                 val tempAudioFile = File(context.filesDir.absolutePath + "${File.separator}${System.currentTimeMillis()}.mp4")
+
                 if (tempAudioFile.createNewFile()) {
                     Timber.d { "Created ${tempAudioFile.absolutePath}"}
                     tempAudioFileList.add(tempAudioFile)
@@ -21,7 +23,7 @@ class FileStorageManager(val context: Context) {
                 } else {
                     subscriber.onError(Exception("File creation for ${tempAudioFile.absolutePath} failed"))
                 }
-            })
+            }
             subscriber.onComplete()
         }
     }

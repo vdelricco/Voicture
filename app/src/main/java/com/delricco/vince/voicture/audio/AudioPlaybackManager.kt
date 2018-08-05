@@ -8,7 +8,7 @@ class AudioPlaybackManager {
     private var mediaPlayer = MediaPlayer()
 
     fun playAudio(audioFile: File): Completable {
-        return Completable.create({ subscriber ->
+        return Completable.create { subscriber ->
             mediaPlayer.apply {
                 reset()
                 setDataSource(audioFile.absolutePath)
@@ -16,7 +16,7 @@ class AudioPlaybackManager {
                 setOnCompletionListener { subscriber.onComplete() }
                 start()
             }
-        })
+        }
     }
 
     fun stop() {

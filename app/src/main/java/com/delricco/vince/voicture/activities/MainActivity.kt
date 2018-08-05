@@ -66,8 +66,10 @@ class MainActivity : AppCompatActivity(),
     private fun showProjectNameDialog() {
         val alertBuilder = AlertDialog.Builder(this)
         val inputEditText = EditText(this)
+
         inputEditText.inputType = InputType.TYPE_CLASS_TEXT
         inputEditText.setText(getString(R.string.default_project_name, savedProjectsPrefs.getSavedProjects().size.toString()))
+
         alertBuilder.apply {
             setTitle(R.string.choose_project_name)
             setView(inputEditText)
@@ -92,6 +94,7 @@ class MainActivity : AppCompatActivity(),
             Toast.makeText(applicationContext, "Need a project name first!", Toast.LENGTH_LONG).show()
             return
         }
+
         startActivityForResult(Intent.createChooser(Intents.CHOOSE_MULTIPLE_PHOTOS, "Select Pictures"), PICK_IMAGES)
     }
 
@@ -99,6 +102,7 @@ class MainActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGES && resultCode == AppCompatActivity.RESULT_OK && data != null) {
             val selectedImageUriList = ArrayList<Uri>()
+
             when {
                 data.data != null -> {
                     Timber.d { "Adding ${data.data} to selected image uri list" }
@@ -122,12 +126,10 @@ class MainActivity : AppCompatActivity(),
                     }
                     .doOnComplete {
                         if (!error) {
-                            runOnUiThread { startActivity(
-                                    Intents.createProjectIntent(
-                                            voictureProjectSerDes.toJson(
-                                                    VoictureProject(voictureArrayList,
-                                                                    projectNameToCreate)),
-                                            this))
+                            runOnUiThread {
+                                startActivity(
+                                    Intents.createProjectIntent(voictureProjectSerDes.toJson(
+                                            VoictureProject(voictureArrayList, projectNameToCreate)), this))
                             }
                         }
                     }

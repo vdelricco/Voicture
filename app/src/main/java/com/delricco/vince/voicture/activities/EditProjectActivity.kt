@@ -24,12 +24,12 @@ import com.delricco.vince.voicture.models.VoictureProject
 import com.delricco.vince.voicture.ui.adapters.ImageViewerAdapter
 import com.github.ajalt.timberkt.Timber
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_project_creation.*
+import kotlinx.android.synthetic.main.activity_edit_project.*
 import javax.inject.Inject
 
 class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
     companion object {
-        val RECORD_AUDIO_PERMISSION_REQUEST_CODE = 1
+        const val RECORD_AUDIO_PERMISSION_REQUEST_CODE = 1
     }
 
     @Inject protected lateinit var audioRecordingManager: AudioRecordingManager
@@ -42,12 +42,16 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_project_creation)
+
+        setContentView(R.layout.activity_edit_project)
+
         VoictureApplication.activityComponent.inject(this)
+
         if (!initVoictureProject(savedInstanceState)) {
             finishActivityOnError("Failed to initialize voicture project")
             return
         }
+
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.getImageUriList())
         imageViewer.addOnPageChangeListener(this)
         indicator.setViewPager(imageViewer)
@@ -69,9 +73,11 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
         } else {
             return false
         }
+
         if (voictureProject.data.isEmpty()) {
             return false
         }
+
         return true
     }
 
@@ -106,9 +112,9 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
         if (currentVoicture().hasAudio()) {
-            playAudio.visibility = View.VISIBLE
+            playAudio.show()
         } else {
-            playAudio.visibility = View.GONE
+            playAudio.hide()
         }
     }
 
@@ -146,7 +152,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
                 audioRecordingManager.stopRecording()
                 recordingOnOff.setImageResource(android.R.drawable.ic_btn_speak_now)
                 imageViewer.setPagingEnabled(true)
-                playAudio.visibility = View.VISIBLE
+                playAudio.show()
             }
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), RECORD_AUDIO_PERMISSION_REQUEST_CODE)

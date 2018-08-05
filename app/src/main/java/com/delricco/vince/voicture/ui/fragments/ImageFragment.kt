@@ -15,8 +15,10 @@ class ImageFragment : Fragment() {
         fun instance(uri: Uri): ImageFragment {
             val imageFragment = ImageFragment()
             val imageUriBundle = Bundle()
+
             imageUriBundle.putString("ImageUri", uri.toString())
             imageFragment.arguments = imageUriBundle
+
             return imageFragment
         }
     }
@@ -27,7 +29,9 @@ class ImageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val imageUri = arguments!!.getString("ImageUri")
+
         if (imageUri.isNullOrEmpty()) {
             throw IllegalArgumentException("Must provide ImageUri")
         } else {

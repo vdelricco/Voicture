@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.delricco.vince.voicture.models.VoictureProject
 
 class VoictureProjectListAdapter(listener: VoictureProjectDelegateAdapter.OnViewSelectedListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: ArrayList<ViewType>
     private var delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
@@ -22,18 +22,14 @@ class VoictureProjectListAdapter(listener: VoictureProjectDelegateAdapter.OnView
 
     override fun getItemCount() = items.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            delegateAdapters[viewType]!!.onCreateViewHolder(parent)
+            delegateAdapters.get(viewType, NoSavedProjectsDelegateAdapter()).onCreateViewHolder(parent)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            delegateAdapters[getItemViewType(position)]!!.onBindViewHolder(holder, items[position])
+            delegateAdapters.get(getItemViewType(position), NoSavedProjectsDelegateAdapter()).onBindViewHolder(holder, items[position])
     override fun getItemViewType(position: Int) = items[position].getViewType()
 
     fun clearAndAddProjects(projects: List<VoictureProject>) {
         items.clear()
-        notifyItemRangeChanged(0, getLastPosition())
-
         items.addAll(projects)
         notifyItemRangeChanged(0, items.size)
     }
-
-    private fun getLastPosition() = if (items.lastIndex == -1) 0 else items.lastIndex
 }
