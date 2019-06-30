@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -67,9 +67,9 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
 
     private fun initVoictureProject(savedInstanceState: Bundle?): Boolean {
         voictureProject = if (savedInstanceState != null && savedInstanceState.containsKey(IntentKeys.VOICTURE_PROJECT)) {
-            voictureProjectSerDes.fromJson(savedInstanceState.getString(IntentKeys.VOICTURE_PROJECT))
-        } else if (intent.extras != null && intent.extras.containsKey(IntentKeys.VOICTURE_PROJECT)) {
-            voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT))
+            voictureProjectSerDes.fromJson(savedInstanceState.getString(IntentKeys.VOICTURE_PROJECT)!!)
+        } else if (intent.extras != null && intent.extras!!.containsKey(IntentKeys.VOICTURE_PROJECT)) {
+            voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT)!!)
         } else {
             return false
         }

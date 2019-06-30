@@ -1,12 +1,12 @@
 package com.delricco.vince.voicture.activities
 
-import android.arch.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
@@ -100,17 +100,17 @@ class MainActivity : AppCompatActivity(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGES && resultCode == AppCompatActivity.RESULT_OK && data != null) {
+        if (requestCode == PICK_IMAGES && resultCode == RESULT_OK && data != null) {
             val selectedImageUriList = ArrayList<Uri>()
 
             when {
                 data.data != null -> {
                     Timber.d { "Adding ${data.data} to selected image uri list" }
-                    selectedImageUriList.add(data.data)
+                    selectedImageUriList.add(data.data!!)
                 }
-                data.clipData != null -> (0..(data.clipData.itemCount - 1)).mapTo(selectedImageUriList) {
-                    Timber.d { "Adding ${data.clipData.getItemAt(it).uri} to selected image uri list" }
-                    data.clipData.getItemAt(it).uri
+                data.clipData != null -> (0 until data.clipData!!.itemCount).mapTo(selectedImageUriList) {
+                    Timber.d { "Adding ${data.clipData!!.getItemAt(it).uri} to selected image uri list" }
+                    data.clipData!!.getItemAt(it).uri
                 }
                 else -> return
             }

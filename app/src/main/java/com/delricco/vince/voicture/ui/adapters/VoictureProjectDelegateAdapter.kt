@@ -1,6 +1,6 @@
 package com.delricco.vince.voicture.ui.adapters
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.commons.extensions.inflate

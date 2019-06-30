@@ -24,7 +24,7 @@ class SavedProjects(context: Context) {
 
     fun getSavedProjects(): List<VoictureProject> {
         return if (hasSavedProject()) {
-            voictureProjectSerDes.listFromJson(sharedPrefs.getString(SAVED_PROJECTS_KEY, ""))
+            voictureProjectSerDes.listFromJson(sharedPrefs.getString(SAVED_PROJECTS_KEY, "")!!)
         } else {
             arrayListOf()
         }
