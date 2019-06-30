@@ -10,7 +10,7 @@ repositories {
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.delricco.vince.voicture"
+        applicationId "co.delric.voicture"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1

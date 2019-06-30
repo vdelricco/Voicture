@@ -1,4 +1,4 @@
-package com.delricco.vince.voicture.activities
+package co.delric.voicture.activities
 
 import android.Manifest
 import android.content.Intent
@@ -12,11 +12,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import com.delricco.vince.voicture.R
-import com.delricco.vince.voicture.commons.serialization.VoictureProjectSerDes
-import com.delricco.vince.voicture.intents.IntentKeys
-import com.delricco.vince.voicture.models.Voicture
-import com.delricco.vince.voicture.models.VoictureProject
+import co.delric.voicture.R
+import co.delric.voicture.commons.serialization.VoictureProjectSerDes
+import co.delric.voicture.intents.IntentKeys
+import co.delric.voicture.models.Voicture
+import co.delric.voicture.models.VoictureProject
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Rule

@@ -1,4 +1,4 @@
-package com.delricco.vince.voicture.activities
+package co.delric.voicture.activities
 
 import android.content.Context
 import android.content.pm.PackageManager

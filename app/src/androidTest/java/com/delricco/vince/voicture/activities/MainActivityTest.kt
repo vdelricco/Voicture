@@ -1,4 +1,4 @@
-package com.delricco.vince.voicture.activities
+package co.delric.voicture.activities
 
 import android.app.Activity.RESULT_OK
 import android.app.Instrumentation
@@ -20,7 +20,7 @@ import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
-import com.delricco.vince.voicture.R
+import co.delric.voicture.R
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Assert.assertTrue
 import org.junit.Rule

@@ -8,5 +8,5 @@
     <string name="choose_project_name">Choose Project Name</string>
     <string name="default_project_name">Project%1$s</string>
 
-    <string name="saved_projects_pref">com.delricco.vince.voicture.prefs.SAVED_PROJECTS</string>
+    <string name="saved_projects_pref">co.delric.voicture.prefs.SAVED_PROJECTS</string>
 </resources>

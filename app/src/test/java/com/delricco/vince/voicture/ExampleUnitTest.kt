@@ -1,4 +1,4 @@
-package com.delricco.vince.voicture
+package co.delric.voicture
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
