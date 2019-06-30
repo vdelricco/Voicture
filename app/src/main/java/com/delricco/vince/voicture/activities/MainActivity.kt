@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(),
         DisplaySavedProjectsFragment.VoictureListProvider,
         VoictureProjectDelegateAdapter.OnViewSelectedListener {
     companion object {
-        val PICK_IMAGES = 1
+        const val PICK_IMAGES = 1
     }
 
     @Inject protected lateinit var savedProjectsPrefs: SavedProjects

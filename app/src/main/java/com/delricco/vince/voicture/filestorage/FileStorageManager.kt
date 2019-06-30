@@ -10,9 +10,9 @@ class FileStorageManager(val context: Context) {
     private val tempAudioFileList = ArrayList<File>()
 
     fun createTempProjectAudioFiles(numFiles: Int): Observable<File> {
-        return Observable.create<File> { subscriber ->
+        return Observable.create { subscriber ->
             repeat(numFiles) {
-                Thread.sleep(1L)
+                Thread.sleep(1L) // yuck
 
                 val tempAudioFile = File(context.filesDir.absolutePath + "${File.separator}${System.currentTimeMillis()}.mp4")
 
@@ -30,12 +30,12 @@ class FileStorageManager(val context: Context) {
 
     fun clearTempFiles(): Completable {
         return Completable.create { subscriber ->
-            tempAudioFileList
-                    .filterNot {
-                        Timber.d { "Deleting ${it.absolutePath}"}
-                        it.delete()
-                    }
-                    .forEach { subscriber.onError(Exception("Failed to delete ${it.absolutePath}")) }
+            tempAudioFileList.filterNot {
+                Timber.d { "Deleting ${it.absolutePath}"}
+                it.delete()
+            }.forEach {
+                subscriber.onError(Exception("Failed to delete ${it.absolutePath}"))
+            }
             tempAudioFileList.clear()
             subscriber.onComplete()
         }

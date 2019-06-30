@@ -4,7 +4,7 @@ import com.delricco.vince.voicture.BuildConfig
 
 class IntentKeys {
     companion object {
-        private val baseIntentUri = BuildConfig.APPLICATION_ID + ".intents.IntentKeys."
-        val VOICTURE_PROJECT = baseIntentUri + "VoictureProject"
+        private const val baseIntentUri = BuildConfig.APPLICATION_ID + ".intents.IntentKeys."
+        const val VOICTURE_PROJECT = baseIntentUri + "VoictureProject"
     }
 }

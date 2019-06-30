@@ -10,7 +10,6 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import com.delricco.vince.voicture.R
 import com.delricco.vince.voicture.VoictureApplication
@@ -52,7 +51,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
             return
         }
 
-        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.getImageUriList())
+        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.imageUriList)
         imageViewer.addOnPageChangeListener(this)
         indicator.setViewPager(imageViewer)
         recordingOnOff.setOnClickListener { onRecordButtonClicked() }
@@ -111,7 +110,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        if (currentVoicture().hasAudio()) {
+        if (currentVoicture().hasAudio) {
             playAudio.show()
         } else {
             playAudio.hide()
@@ -138,7 +137,7 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
     }
 
     private fun saveCurrentProject() {
-        fileStorageManager.removeFilesFromTempList(voictureProject.getAudioFileList())
+        fileStorageManager.removeFilesFromTempList(voictureProject.audioFileList)
         savedProjectsPrefs.saveProject(voictureProject)
     }
 

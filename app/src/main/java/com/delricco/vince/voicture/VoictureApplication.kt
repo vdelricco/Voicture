@@ -29,11 +29,10 @@ class VoictureApplication : Application() {
         LeakCanary.install(this)
         Timber.plant(DebugTree())
 
-        activityComponent = DaggerActivityComponent
-                .builder()
-                .fileStorageModule(FileStorageModule(applicationContext))
-                .sharedPrefsModule(SharedPrefsModule(applicationContext))
-                .build()
+        activityComponent = DaggerActivityComponent.builder()
+            .fileStorageModule(FileStorageModule(applicationContext))
+            .sharedPrefsModule(SharedPrefsModule(applicationContext))
+            .build()
         sharedPrefsComponent = DaggerSharedPrefsComponent.create()
     }
 }

@@ -28,7 +28,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
         VoictureApplication.activityComponent.inject(this)
 
         voictureProject = voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT))
-        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.getImageUriList())
+        imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.imageUriList)
         imageViewer.setPagingEnabled(false)
 
         startVoictureProjectPlayback()
@@ -46,7 +46,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
     }
 
     private fun nextVoicture() {
-        if (currentVoicture().hasAudio()) {
+        if (currentVoicture().hasAudio) {
             audioPlaybackManager.playAudio(currentVoicture().audioFile).subscribe()
         }
         // TODO: Obvious

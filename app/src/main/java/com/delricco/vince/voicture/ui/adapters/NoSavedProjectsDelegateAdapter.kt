@@ -7,11 +7,8 @@ import com.delricco.vince.voicture.commons.extensions.inflate
 
 class NoSavedProjectsDelegateAdapter : ViewTypeDelegateAdapter {
     override fun onCreateViewHolder(parent: ViewGroup) = NoSavedProjectsViewHolder(parent)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ViewType) = Unit
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ViewType) {
-    }
-
-    class NoSavedProjectsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-            parent.inflate(R.layout.no_saved_projects_item)
-    )
+    class NoSavedProjectsViewHolder(parent: ViewGroup) :
+        RecyclerView.ViewHolder(parent.inflate(R.layout.no_saved_projects_item))
 }

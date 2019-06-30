@@ -5,13 +5,6 @@ import com.squareup.moshi.ToJson
 import java.io.File
 
 class FileAdapter {
-    @FromJson
-    fun fromJson(filePath: String): File {
-        return File(filePath)
-    }
-
-    @ToJson
-    fun toJson(file: File): String {
-        return file.absolutePath
-    }
+    @FromJson fun fromJson(filePath: String) = File(filePath)
+    @ToJson fun toJson(file: File) = file.absolutePath
 }

@@ -10,6 +10,4 @@ fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutId, this, attachToRoot)
 }
 
-fun ImageView.loadImg(imageUri: String) {
-    Picasso.with(context).load(imageUri).fit().centerInside().into(this)
-}
+fun ImageView.loadImg(imageUri: String) = Picasso.with(context).load(imageUri).fit().centerInside().into(this)

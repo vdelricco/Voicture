@@ -6,8 +6,6 @@ import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 
-
-
 class VoictureProjectSerDes {
     private val voictureProjectJsonAdapter = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
