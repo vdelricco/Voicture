@@ -30,10 +30,7 @@ class SavedProjects(context: Context) {
         }
     }
 
-    fun getIndexByName(testName: String): Int {
-        val projects = getSavedProjects()
-        return projects.indices.firstOrNull { projects[it].name == testName } ?: -1
-    }
+    fun projectExists(testName: String) = getSavedProjects().find { project -> project.name == testName } != null
 
     fun saveProject(project: VoictureProject) {
         val projectList = getSavedProjects() as ArrayList
@@ -46,6 +43,11 @@ class SavedProjects(context: Context) {
         }
 
         sharedPrefs.edit().putString(SAVED_PROJECTS_KEY, voictureProjectSerDes.listToJson(projectList)).apply()
+    }
+
+    private fun getIndexByName(testName: String): Int {
+        val projects = getSavedProjects()
+        return projects.indices.firstOrNull { projects[it].name == testName } ?: -1
     }
 
     fun clear() = sharedPrefs.edit().clear().apply()

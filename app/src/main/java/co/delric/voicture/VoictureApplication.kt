@@ -26,8 +26,10 @@ class VoictureApplication : Application() {
             return
         }
 
-        LeakCanary.install(this)
-        Timber.plant(DebugTree())
+        if (BuildConfig.DEBUG) {
+            LeakCanary.install(this)
+            Timber.plant(DebugTree())
+        }
 
         activityComponent = DaggerActivityComponent.builder()
             .fileStorageModule(FileStorageModule(applicationContext))

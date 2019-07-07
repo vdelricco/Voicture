@@ -21,6 +21,7 @@ import co.delric.voicture.filestorage.FileStorageManager
 import co.delric.voicture.intents.Intents
 import co.delric.voicture.models.Voicture
 import co.delric.voicture.models.VoictureProject
+import co.delric.voicture.presenters.DisplayProjectsPresenter
 import co.delric.voicture.ui.adapters.VoictureProjectDelegateAdapter
 import co.delric.voicture.ui.fragments.DisplaySavedProjectsFragment
 import com.github.ajalt.timberkt.Timber
@@ -39,6 +40,7 @@ class DisplayProjectsActivity : AppCompatActivity(),
     @Inject protected lateinit var savedProjectsPrefs: SavedProjects
     @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
     @Inject protected lateinit var fileStorageManager: FileStorageManager
+    @Inject protected lateinit var displayProjectsPresenter: DisplayProjectsPresenter
 
     private val provider = AndroidLifecycle.createLifecycleProvider(this)
     private lateinit var projectNameToCreate: String
@@ -48,44 +50,34 @@ class DisplayProjectsActivity : AppCompatActivity(),
         setContentView(R.layout.activity_display_projects)
         VoictureApplication.activityComponent.inject(this)
         setSupportActionBar(toolbar)
-        createProjectFab.setOnClickListener { createProject() }
-        if (savedInstanceState == null) {
-            changeFragment(DisplaySavedProjectsFragment(), false)
-        }
+        createProjectFab.setOnClickListener { startProjectCreationFlow() }
+        if (savedInstanceState == null) changeFragment(DisplaySavedProjectsFragment(), false)
     }
 
-    override fun getVoictureProjectList() = savedProjectsPrefs.getSavedProjects()
+    override fun getVoictureProjectList() = displayProjectsPresenter.getSavedProjects()
 
-    override fun onItemSelected(project: VoictureProject) {
+    override fun onItemSelected(project: VoictureProject) =
         startActivity(Intents.createProjectIntent(voictureProjectSerDes.toJson(project), this))
-    }
 
-    private fun createProject() {
-        showProjectNameDialog()
-    }
+    private fun startProjectCreationFlow() {
+        val inputEditText = EditText(this).apply {
+            inputType = InputType.TYPE_CLASS_TEXT
+            setText(getString(R.string.default_project_name, savedProjectsPrefs.getSavedProjects().size.toString()))
+        }
 
-    private fun showProjectNameDialog() {
-        val alertBuilder = AlertDialog.Builder(this)
-        val inputEditText = EditText(this)
-
-        inputEditText.inputType = InputType.TYPE_CLASS_TEXT
-        inputEditText.setText(getString(R.string.default_project_name, savedProjectsPrefs.getSavedProjects().size.toString()))
-
-        alertBuilder.apply {
+        AlertDialog.Builder(this).apply {
             setTitle(R.string.choose_project_name)
             setView(inputEditText)
             setPositiveButton("Create") { _, _ ->
                 val chosenName = inputEditText.text.toString()
-                if (savedProjectsPrefs.getIndexByName(chosenName) != -1) {
+                if (savedProjectsPrefs.projectExists(chosenName)) {
                     Toast.makeText(applicationContext, "Name is already taken", Toast.LENGTH_LONG).show()
                 } else {
                     projectNameToCreate = chosenName
                     sendChoosePhotosIntent()
                 }
             }
-            setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }
+            setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
             show()
         }
     }
@@ -152,7 +144,7 @@ class DisplayProjectsActivity : AppCompatActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_new_project -> {
-            createProject()
+            startProjectCreationFlow()
             true
         }
         else -> super.onOptionsItemSelected(item)

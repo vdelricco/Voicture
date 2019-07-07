@@ -26,9 +26,9 @@ class DisplaySavedProjectsFragment : Fragment() {
         projectListRecyclerView.setHasFixedSize(true)
         projectListRecyclerView.layoutManager = LinearLayoutManager(this.activity!!.applicationContext)
         projectListRecyclerView.addItemDecoration(
-                DividerItemDecoration(projectListRecyclerView.context, DividerItemDecoration.VERTICAL))
+            DividerItemDecoration(projectListRecyclerView.context, DividerItemDecoration.VERTICAL))
         projectListRecyclerView.adapter =
-                VoictureProjectListAdapter(this.activity as VoictureProjectDelegateAdapter.OnViewSelectedListener)
+            VoictureProjectListAdapter(this.activity as VoictureProjectDelegateAdapter.OnViewSelectedListener)
     }
 
     override fun onResume() {
