@@ -17,6 +17,7 @@ import co.delric.voicture.commons.serialization.VoictureProjectSerDes
 import co.delric.voicture.intents.IntentKeys
 import co.delric.voicture.models.Voicture
 import co.delric.voicture.models.VoictureProject
+import co.delric.voicture.ui.activities.EditProjectActivity
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Rule

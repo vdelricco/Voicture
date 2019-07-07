@@ -2,7 +2,7 @@ package co.delric.voicture.intents
 
 import android.content.Context
 import android.content.Intent
-import co.delric.voicture.activities.EditProjectActivity
+import co.delric.voicture.ui.activities.EditProjectActivity
 import co.delric.voicture.intents.IntentKeys.Companion.VOICTURE_PROJECT
 
 class Intents {

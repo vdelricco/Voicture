@@ -1,8 +1,8 @@
 package co.delric.voicture.di.components;
 
-import co.delric.voicture.activities.EditProjectActivity
-import co.delric.voicture.activities.MainActivity
-import co.delric.voicture.activities.PreviewVoictureProjectActivity
+import co.delric.voicture.ui.activities.EditProjectActivity
+import co.delric.voicture.ui.activities.DisplayProjectsActivity
+import co.delric.voicture.ui.activities.PreviewVoictureProjectActivity
 import co.delric.voicture.di.modules.AudioModule
 import co.delric.voicture.di.modules.FileStorageModule
 import co.delric.voicture.di.modules.SerDesModule
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(AudioModule::class, SharedPrefsModule::class, SerDesModule::class, FileStorageModule::class))
 interface ActivityComponent {
-    fun inject(mainActivity: MainActivity)
+    fun inject(displayProjectsActivity: DisplayProjectsActivity)
     fun inject(editProjectActivity: EditProjectActivity)
     fun inject(previewVoictureProjectActivity: PreviewVoictureProjectActivity)
 }

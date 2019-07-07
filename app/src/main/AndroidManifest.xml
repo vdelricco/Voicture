@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
+            android:name="co.delric.voicture.ui.activities.DisplayProjectsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,8 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.EditProjectActivity" />
-        <activity android:name=".activities.PreviewVoictureProjectActivity" />
+        <activity android:name="co.delric.voicture.ui.activities.EditProjectActivity" />
+        <activity android:name="co.delric.voicture.ui.activities.PreviewVoictureProjectActivity" />
     </application>
 
 </manifest>

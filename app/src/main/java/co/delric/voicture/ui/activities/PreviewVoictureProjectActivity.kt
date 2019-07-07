@@ -1,4 +1,4 @@
-package co.delric.voicture.activities
+package co.delric.voicture.ui.activities
 
 import android.os.Bundle
 import android.os.Handler

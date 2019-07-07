@@ -1,4 +1,4 @@
-package co.delric.voicture.activities
+package co.delric.voicture.ui.activities
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.Lifecycle
@@ -26,10 +26,10 @@ import co.delric.voicture.ui.fragments.DisplaySavedProjectsFragment
 import com.github.ajalt.timberkt.Timber
 import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_display_projects.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(),
+class DisplayProjectsActivity : AppCompatActivity(),
         DisplaySavedProjectsFragment.VoictureListProvider,
         VoictureProjectDelegateAdapter.OnViewSelectedListener {
     companion object {
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_display_projects)
         VoictureApplication.activityComponent.inject(this)
         setSupportActionBar(toolbar)
         createProjectFab.setOnClickListener { createProject() }
@@ -100,71 +100,66 @@ class MainActivity : AppCompatActivity(),
     }
 
     @SuppressLint("CheckResult")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGES && resultCode == RESULT_OK && data != null) {
-            val selectedImageUriList = ArrayList<Uri>()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, dataIntent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, dataIntent)
+        if (requestCode != PICK_IMAGES || resultCode != RESULT_OK || dataIntent == null) return
 
-            when {
-                data.data != null -> {
-                    Timber.d { "Adding ${data.data} to selected image uri list" }
-                    selectedImageUriList.add(data.data!!)
-                }
-                data.clipData != null -> (0 until data.clipData!!.itemCount).mapTo(selectedImageUriList) {
-                    Timber.d { "Adding ${data.clipData!!.getItemAt(it).uri} to selected image uri list" }
-                    data.clipData!!.getItemAt(it).uri
-                }
-                else -> return
+        val selectedImageUriList = mutableListOf<Uri>()
+
+        dataIntent.apply {
+            data?.let {
+                Timber.d { "Adding $it to selected image uri list" }
+                selectedImageUriList.add(it)
             }
 
-            val voictureArrayList = ArrayList<Voicture>()
-            var index = 0
-            var error = false
-            fileStorageManager.createTempProjectAudioFiles(selectedImageUriList.size)
-                .compose(provider.bindUntilEvent(Lifecycle.Event.ON_PAUSE))
-                .doOnError { t: Throwable ->
-                    Timber.e { t.toString() }
-                    error = true
+            clipData?.let {
+                (0 until it.itemCount).mapTo(selectedImageUriList) { index ->
+                    Timber.d { "Adding ${it.getItemAt(index).uri} to selected image uri list" }
+                    it.getItemAt(index).uri
                 }
-                .doOnComplete {
-                    if (!error) {
-                        runOnUiThread {
-                            startActivity(
-                                Intents.createProjectIntent(voictureProjectSerDes.toJson(
-                                        VoictureProject(voictureArrayList, projectNameToCreate)), this))
-                        }
+            }
+        }
+
+        val voictureArrayList = ArrayList<Voicture>()
+        var index = 0
+        var error = false
+        fileStorageManager.createTempProjectAudioFiles(selectedImageUriList.size)
+            .compose(provider.bindUntilEvent(Lifecycle.Event.ON_PAUSE))
+            .doOnError { t: Throwable ->
+                Timber.e { t.toString() }
+                error = true
+            }
+            .doOnComplete {
+                if (!error) {
+                    runOnUiThread {
+                        startActivity(
+                            Intents.createProjectIntent(voictureProjectSerDes.toJson(
+                                VoictureProject(voictureArrayList, projectNameToCreate)), this))
                     }
                 }
-                .subscribeOn(Schedulers.io())
-                .subscribe { file ->
-                    voictureArrayList.add(Voicture(selectedImageUriList[index], file))
-                    index++
-                }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_new_project -> {
-                createProject()
-                return true
             }
-            else -> super.onOptionsItemSelected(item)
-        }
+            .subscribeOn(Schedulers.io())
+            .subscribe { file ->
+                voictureArrayList.add(Voicture(selectedImageUriList[index], file))
+                index++
+            }
     }
 
-    private fun changeFragment(f: Fragment, addToBackStack: Boolean) {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, f)
-            if (addToBackStack) {
-                addToBackStack(null)
-            }
-        }.commit()
+    override fun onCreateOptionsMenu(menu: Menu) = menuInflater.run {
+        inflate(R.menu.menu_main, menu)
+        true
     }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_new_project -> {
+            createProject()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun changeFragment(f: Fragment, addToBackStack: Boolean) = supportFragmentManager.beginTransaction().apply {
+        replace(R.id.fragment_container, f)
+        if (addToBackStack) addToBackStack(null)
+    }.commit()
 }

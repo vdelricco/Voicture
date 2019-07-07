@@ -21,15 +21,17 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import co.delric.voicture.R
+import co.delric.voicture.ui.activities.DisplayProjectsActivity
+import co.delric.voicture.ui.activities.EditProjectActivity
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
-class MainActivityTest {
+class DisplayProjectsActivityTest {
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(MainActivity::class.java, true)
+    val activityRule = ActivityTestRule(DisplayProjectsActivity::class.java, true)
 
     @Test
     fun displayProjectsFragmentIsVisible() {

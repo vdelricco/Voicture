@@ -24,7 +24,8 @@ class VoictureProjectListAdapter(listener: VoictureProjectDelegateAdapter.OnView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             delegateAdapters.get(viewType, NoSavedProjectsDelegateAdapter()).onCreateViewHolder(parent)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            delegateAdapters.get(getItemViewType(position), NoSavedProjectsDelegateAdapter()).onBindViewHolder(holder, items[position])
+            delegateAdapters.get(getItemViewType(position), NoSavedProjectsDelegateAdapter())
+                .onBindViewHolder(holder, items[position])
     override fun getItemViewType(position: Int) = items[position].getViewType()
 
     fun clearAndAddProjects(projects: List<VoictureProject>) {
