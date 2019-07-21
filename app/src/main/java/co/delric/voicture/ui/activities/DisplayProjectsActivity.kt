@@ -1,7 +1,6 @@
 package co.delric.voicture.ui.activities
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.Lifecycle
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,18 +14,12 @@ import android.widget.EditText
 import android.widget.Toast
 import co.delric.voicture.R
 import co.delric.voicture.VoictureApplication
-import co.delric.voicture.commons.serialization.VoictureProjectSerDes
-import co.delric.voicture.commons.sharedprefs.SavedProjects
-import co.delric.voicture.filestorage.FileStorageManager
 import co.delric.voicture.intents.Intents
-import co.delric.voicture.models.Voicture
 import co.delric.voicture.models.VoictureProject
 import co.delric.voicture.presenters.DisplayProjectsPresenter
 import co.delric.voicture.ui.adapters.VoictureProjectDelegateAdapter
 import co.delric.voicture.ui.fragments.DisplaySavedProjectsFragment
 import com.github.ajalt.timberkt.Timber
-import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_display_projects.*
 import javax.inject.Inject
 
@@ -37,13 +30,7 @@ class DisplayProjectsActivity : AppCompatActivity(),
         const val PICK_IMAGES = 1
     }
 
-    @Inject protected lateinit var savedProjectsPrefs: SavedProjects
-    @Inject protected lateinit var voictureProjectSerDes: VoictureProjectSerDes
-    @Inject protected lateinit var fileStorageManager: FileStorageManager
     @Inject protected lateinit var displayProjectsPresenter: DisplayProjectsPresenter
-
-    private val provider = AndroidLifecycle.createLifecycleProvider(this)
-    private lateinit var projectNameToCreate: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +44,12 @@ class DisplayProjectsActivity : AppCompatActivity(),
     override fun getVoictureProjectList() = displayProjectsPresenter.getSavedProjects()
 
     override fun onItemSelected(project: VoictureProject) =
-        startActivity(Intents.createProjectIntent(voictureProjectSerDes.toJson(project), this))
+        startActivity(Intents.createProjectIntent(displayProjectsPresenter.getJsonForProject(project), this))
 
     private fun startProjectCreationFlow() {
         val inputEditText = EditText(this).apply {
             inputType = InputType.TYPE_CLASS_TEXT
-            setText(getString(R.string.default_project_name, savedProjectsPrefs.getSavedProjects().size.toString()))
+            setText(getString(R.string.default_project_name, displayProjectsPresenter.getSavedProjects().size.toString()))
         }
 
         AlertDialog.Builder(this).apply {
@@ -70,10 +57,10 @@ class DisplayProjectsActivity : AppCompatActivity(),
             setView(inputEditText)
             setPositiveButton("Create") { _, _ ->
                 val chosenName = inputEditText.text.toString()
-                if (savedProjectsPrefs.projectExists(chosenName)) {
+                if (displayProjectsPresenter.projectExists(chosenName)) {
                     Toast.makeText(applicationContext, "Name is already taken", Toast.LENGTH_LONG).show()
                 } else {
-                    projectNameToCreate = chosenName
+                    displayProjectsPresenter.projectNameToCreate = chosenName
                     sendChoosePhotosIntent()
                 }
             }
@@ -83,7 +70,7 @@ class DisplayProjectsActivity : AppCompatActivity(),
     }
 
     private fun sendChoosePhotosIntent() {
-        if (projectNameToCreate.isEmpty()) {
+        if (displayProjectsPresenter.projectNameToCreate.isEmpty()) {
             Toast.makeText(applicationContext, "Need a project name first!", Toast.LENGTH_LONG).show()
             return
         }
@@ -112,29 +99,7 @@ class DisplayProjectsActivity : AppCompatActivity(),
             }
         }
 
-        val voictureArrayList = ArrayList<Voicture>()
-        var index = 0
-        var error = false
-        fileStorageManager.createTempProjectAudioFiles(selectedImageUriList.size)
-            .compose(provider.bindUntilEvent(Lifecycle.Event.ON_PAUSE))
-            .doOnError { t: Throwable ->
-                Timber.e { t.toString() }
-                error = true
-            }
-            .doOnComplete {
-                if (!error) {
-                    runOnUiThread {
-                        startActivity(
-                            Intents.createProjectIntent(voictureProjectSerDes.toJson(
-                                VoictureProject(voictureArrayList, projectNameToCreate)), this))
-                    }
-                }
-            }
-            .subscribeOn(Schedulers.io())
-            .subscribe { file ->
-                voictureArrayList.add(Voicture(selectedImageUriList[index], file))
-                index++
-            }
+        displayProjectsPresenter.createProjectFromUris(this, selectedImageUriList.toList())
     }
 
     override fun onCreateOptionsMenu(menu: Menu) = menuInflater.run {

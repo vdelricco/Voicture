@@ -27,7 +27,7 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
 
         VoictureApplication.activityComponent.inject(this)
 
-        voictureProject = voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT))
+        voictureProject = voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT)!!)
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.imageUriList)
         imageViewer.setPagingEnabled(false)
 
