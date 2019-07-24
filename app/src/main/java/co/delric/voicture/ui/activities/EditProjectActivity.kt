@@ -17,6 +17,7 @@ import co.delric.voicture.audio.AudioPlaybackManager
 import co.delric.voicture.audio.AudioRecordingManager
 import co.delric.voicture.commons.serialization.VoictureProjectSerDes
 import co.delric.voicture.commons.sharedprefs.SavedProjects
+import co.delric.voicture.di.modules.ActivityModule
 import co.delric.voicture.filestorage.FileStorageManager
 import co.delric.voicture.intents.IntentKeys
 import co.delric.voicture.models.VoictureProject
@@ -44,7 +45,11 @@ class EditProjectActivity : AppCompatActivity(), ViewPager.OnPageChangeListener 
 
         setContentView(R.layout.activity_edit_project)
 
-        VoictureApplication.activityComponent.inject(this)
+        VoictureApplication.applicationComponent
+            .activityComponent()
+            .activityModule(ActivityModule(this))
+            .build()
+            .inject(this)
 
         if (!initVoictureProject(savedInstanceState)) {
             finishActivityOnError("Failed to initialize voicture project")

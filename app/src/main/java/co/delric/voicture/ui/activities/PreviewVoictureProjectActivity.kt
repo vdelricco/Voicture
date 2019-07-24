@@ -7,6 +7,7 @@ import co.delric.voicture.R
 import co.delric.voicture.VoictureApplication
 import co.delric.voicture.audio.AudioPlaybackManager
 import co.delric.voicture.commons.serialization.VoictureProjectSerDes
+import co.delric.voicture.di.modules.ActivityModule
 import co.delric.voicture.intents.IntentKeys
 import co.delric.voicture.models.VoictureProject
 import co.delric.voicture.ui.adapters.ImageViewerAdapter
@@ -25,7 +26,11 @@ class PreviewVoictureProjectActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_preview_voicture)
 
-        VoictureApplication.activityComponent.inject(this)
+        VoictureApplication.applicationComponent
+            .activityComponent()
+            .activityModule(ActivityModule(this))
+            .build()
+            .inject(this)
 
         voictureProject = voictureProjectSerDes.fromJson(intent.getStringExtra(IntentKeys.VOICTURE_PROJECT)!!)
         imageViewer.adapter = ImageViewerAdapter(supportFragmentManager, voictureProject.imageUriList)

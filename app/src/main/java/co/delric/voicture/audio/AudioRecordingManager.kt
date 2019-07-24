@@ -1,11 +1,15 @@
 package co.delric.voicture.audio
 
 import android.media.MediaRecorder
+import co.delric.voicture.di.components.ApplicationScope
 import com.github.ajalt.timberkt.Timber
 import java.io.File
 import java.io.IOException
+import javax.inject.Inject
 
-class AudioRecordingManager : MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
+@ApplicationScope
+class AudioRecordingManager @Inject constructor(
+) : MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
     private lateinit var recorder: MediaRecorder
     private var state: RecordingState = RecordingState.STOPPED
 

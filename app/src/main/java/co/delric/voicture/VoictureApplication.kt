@@ -1,12 +1,9 @@
 package co.delric.voicture
 
 import android.app.Application
-import co.delric.voicture.di.components.ActivityComponent
-import co.delric.voicture.di.components.DaggerActivityComponent
-import co.delric.voicture.di.components.DaggerSharedPrefsComponent
-import co.delric.voicture.di.components.SharedPrefsComponent
-import co.delric.voicture.di.modules.FileStorageModule
-import co.delric.voicture.di.modules.SharedPrefsModule
+import co.delric.voicture.di.components.ApplicationComponent
+import co.delric.voicture.di.components.DaggerApplicationComponent
+import co.delric.voicture.di.modules.AndroidModule
 import com.github.ajalt.timberkt.Timber
 import com.squareup.leakcanary.LeakCanary
 import timber.log.Timber.DebugTree
@@ -14,8 +11,7 @@ import timber.log.Timber.DebugTree
 class VoictureApplication : Application() {
 
     companion object {
-        lateinit var activityComponent: ActivityComponent
-        lateinit var sharedPrefsComponent: SharedPrefsComponent
+        lateinit var applicationComponent: ApplicationComponent
     }
 
     override fun onCreate() {
@@ -31,10 +27,9 @@ class VoictureApplication : Application() {
             Timber.plant(DebugTree())
         }
 
-        activityComponent = DaggerActivityComponent.builder()
-            .fileStorageModule(FileStorageModule(applicationContext))
-            .sharedPrefsModule(SharedPrefsModule(applicationContext))
+        applicationComponent = DaggerApplicationComponent
+            .builder()
+            .androidModule(AndroidModule(this))
             .build()
-        sharedPrefsComponent = DaggerSharedPrefsComponent.create()
     }
 }

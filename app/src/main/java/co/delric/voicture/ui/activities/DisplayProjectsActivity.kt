@@ -4,16 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import co.delric.voicture.R
 import co.delric.voicture.VoictureApplication
+import co.delric.voicture.di.modules.ActivityModule
 import co.delric.voicture.intents.Intents
 import co.delric.voicture.models.VoictureProject
 import co.delric.voicture.presenters.DisplayProjectsPresenter
@@ -23,21 +24,38 @@ import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.activity_display_projects.*
 import javax.inject.Inject
 
+interface DisplayProjectsView {
+    fun startProjectCreationFlow()
+    fun showProjectNameNeeded()
+    fun showProjectNameTaken()
+    fun sendChoosePhotosIntent()
+}
+
 class DisplayProjectsActivity : AppCompatActivity(),
-        DisplaySavedProjectsFragment.VoictureListProvider,
-        VoictureProjectDelegateAdapter.OnViewSelectedListener {
+    DisplaySavedProjectsFragment.VoictureListProvider,
+    VoictureProjectDelegateAdapter.OnViewSelectedListener,
+    DisplayProjectsView {
+
     companion object {
         const val PICK_IMAGES = 1
     }
 
-    @Inject protected lateinit var displayProjectsPresenter: DisplayProjectsPresenter
+    @Inject
+    protected lateinit var displayProjectsPresenter: DisplayProjectsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_display_projects)
-        VoictureApplication.activityComponent.inject(this)
         setSupportActionBar(toolbar)
-        createProjectFab.setOnClickListener { startProjectCreationFlow() }
+
+        VoictureApplication.applicationComponent
+            .activityComponent()
+            .activityModule(ActivityModule(this))
+            .build()
+            .inject(this)
+
+        createProjectFab.setOnClickListener { displayProjectsPresenter.onNewProjectClicked(this) }
         if (savedInstanceState == null) changeFragment(DisplaySavedProjectsFragment(), false)
     }
 
@@ -46,35 +64,33 @@ class DisplayProjectsActivity : AppCompatActivity(),
     override fun onItemSelected(project: VoictureProject) =
         startActivity(Intents.createProjectIntent(displayProjectsPresenter.getJsonForProject(project), this))
 
-    private fun startProjectCreationFlow() {
+    override fun startProjectCreationFlow() {
         val inputEditText = EditText(this).apply {
             inputType = InputType.TYPE_CLASS_TEXT
-            setText(getString(R.string.default_project_name, displayProjectsPresenter.getSavedProjects().size.toString()))
+            setText(getString(
+                R.string.default_project_name, displayProjectsPresenter.getSavedProjects().size.toString()))
         }
 
         AlertDialog.Builder(this).apply {
             setTitle(R.string.choose_project_name)
             setView(inputEditText)
             setPositiveButton("Create") { _, _ ->
-                val chosenName = inputEditText.text.toString()
-                if (displayProjectsPresenter.projectExists(chosenName)) {
-                    Toast.makeText(applicationContext, "Name is already taken", Toast.LENGTH_LONG).show()
-                } else {
-                    displayProjectsPresenter.projectNameToCreate = chosenName
-                    sendChoosePhotosIntent()
-                }
+                displayProjectsPresenter.onCreateProject(inputEditText.text.toString(), this@DisplayProjectsActivity)
             }
             setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
             show()
         }
     }
 
-    private fun sendChoosePhotosIntent() {
-        if (displayProjectsPresenter.projectNameToCreate.isEmpty()) {
-            Toast.makeText(applicationContext, "Need a project name first!", Toast.LENGTH_LONG).show()
-            return
-        }
+    override fun showProjectNameNeeded() {
+        Toast.makeText(applicationContext, "Need a project name first!", Toast.LENGTH_LONG).show()
+    }
 
+    override fun showProjectNameTaken() {
+        Toast.makeText(applicationContext, "Project name is already taken", Toast.LENGTH_LONG).show()
+    }
+
+    override fun sendChoosePhotosIntent() {
         startActivityForResult(Intent.createChooser(Intents.CHOOSE_MULTIPLE_PHOTOS, "Select Pictures"), PICK_IMAGES)
     }
 
