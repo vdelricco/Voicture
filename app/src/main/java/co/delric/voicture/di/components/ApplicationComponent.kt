@@ -1,6 +1,7 @@
 package co.delric.voicture.di.components
 
 import co.delric.voicture.di.modules.AndroidModule
+import co.delric.voicture.di.modules.JsonModule
 import dagger.Component
 import javax.inject.Scope
 
@@ -15,7 +16,7 @@ import javax.inject.Scope
 annotation class ApplicationScope
 
 @ApplicationScope
-@Component(modules = [AndroidModule::class])
+@Component(modules = [AndroidModule::class, JsonModule::class])
 interface ApplicationComponent {
     fun activityComponent(): ActivityComponent.Builder
 
