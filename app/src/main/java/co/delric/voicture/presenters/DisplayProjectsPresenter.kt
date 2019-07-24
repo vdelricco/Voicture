@@ -64,6 +64,9 @@ class DisplayProjectsPresenter @Inject constructor(
     fun onCreateProject(projectName: String, displayProjectsView: DisplayProjectsView) = when {
         projectName.isEmpty() -> displayProjectsView.showProjectNameNeeded()
         projectExists(projectName) -> displayProjectsView.showProjectNameTaken()
-        else -> displayProjectsView.sendChoosePhotosIntent()
+        else -> {
+            projectNameToCreate = projectName
+            displayProjectsView.sendChoosePhotosIntent()
+        }
     }
 }

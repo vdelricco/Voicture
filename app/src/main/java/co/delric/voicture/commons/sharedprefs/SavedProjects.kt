@@ -18,34 +18,28 @@ class SavedProjects @Inject constructor(
 
     private val sharedPrefs = context.getSharedPreferences(context.getString(R.string.saved_projects_pref), Context.MODE_PRIVATE)
 
-    fun hasSavedProject() = sharedPrefs.getString(SAVED_PROJECTS_KEY, "") != ""
-
-    fun getSavedProjects(): List<VoictureProject> {
-        return if (hasSavedProject()) {
-            voictureProjectSerDes.listFromJson(sharedPrefs.getString(SAVED_PROJECTS_KEY, "")!!)
-        } else {
-            arrayListOf()
-        }
+    fun getSavedProjects() = if (hasSavedProject()) {
+        voictureProjectSerDes.listFromJson(sharedPrefs.getString(SAVED_PROJECTS_KEY, "")!!)
+    } else {
+        arrayListOf()
     }
 
-    fun projectExists(testName: String) = getSavedProjects().find { project -> project.name == testName } != null
+    private fun hasSavedProject() = sharedPrefs.getString(SAVED_PROJECTS_KEY, "") != ""
 
-    fun saveProject(project: VoictureProject) {
-        val projectList = getSavedProjects() as ArrayList
-        val currentIndex = getIndexByName(project.name)
+    fun projectExists(testName: String) = getSavedProjects().find { it.name == testName } != null
 
-        if (currentIndex != -1) {
-            projectList[currentIndex] = project
+    fun saveProject(project: VoictureProject) = getSavedProjects().toMutableList().let {
+        if (projectExists(project.name)) {
+            it[getIndexByName(project.name)] = project
         } else {
-            projectList.add(project)
+            it.add(project)
         }
 
-        sharedPrefs.edit().putString(SAVED_PROJECTS_KEY, voictureProjectSerDes.listToJson(projectList)).apply()
+        sharedPrefs.edit().putString(SAVED_PROJECTS_KEY, voictureProjectSerDes.listToJson(it)).apply()
     }
 
-    private fun getIndexByName(testName: String): Int {
-        val projects = getSavedProjects()
-        return projects.indices.firstOrNull { projects[it].name == testName } ?: -1
+    private fun getIndexByName(testName: String) = getSavedProjects().let { projects ->
+        projects.indices.firstOrNull { projects[it].name == testName } ?: -1
     }
 
     fun clear() = sharedPrefs.edit().clear().apply()
