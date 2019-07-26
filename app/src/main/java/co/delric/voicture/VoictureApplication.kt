@@ -6,13 +6,20 @@ import co.delric.voicture.di.components.DaggerApplicationComponent
 import co.delric.voicture.di.modules.AndroidModule
 import com.github.ajalt.timberkt.Timber
 import com.squareup.leakcanary.LeakCanary
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber.DebugTree
+import javax.inject.Inject
 
-class VoictureApplication : Application() {
 
+class VoictureApplication : Application(), HasAndroidInjector {
     companion object {
         lateinit var applicationComponent: ApplicationComponent
     }
+
+    @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+
+    override fun androidInjector() = dispatchingAndroidInjector
 
     override fun onCreate() {
         super.onCreate()
@@ -31,5 +38,7 @@ class VoictureApplication : Application() {
             .builder()
             .androidModule(AndroidModule(this))
             .build()
+
+        applicationComponent.inject(this)
     }
 }

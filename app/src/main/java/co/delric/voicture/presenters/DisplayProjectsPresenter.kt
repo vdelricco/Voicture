@@ -17,7 +17,6 @@ import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-@ActivityScope
 class DisplayProjectsPresenter @Inject constructor(
     private val savedProjects: SavedProjects,
     private val fileStorageManager: FileStorageManager,
@@ -26,7 +25,6 @@ class DisplayProjectsPresenter @Inject constructor(
     var projectNameToCreate = ""
 
     fun getSavedProjects() = savedProjects.getSavedProjects()
-    fun projectExists(projectName: String) = savedProjects.projectExists(projectName)
     fun getJsonForProject(voictureProject: VoictureProject) = voictureProjectSerDes.toJson(voictureProject)
 
     @SuppressLint("CheckResult")
@@ -63,7 +61,7 @@ class DisplayProjectsPresenter @Inject constructor(
 
     fun onCreateProject(projectName: String, displayProjectsView: DisplayProjectsView) = when {
         projectName.isEmpty() -> displayProjectsView.showProjectNameNeeded()
-        projectExists(projectName) -> displayProjectsView.showProjectNameTaken()
+        savedProjects.projectExists(projectName) -> displayProjectsView.showProjectNameTaken()
         else -> {
             projectNameToCreate = projectName
             displayProjectsView.sendChoosePhotosIntent()

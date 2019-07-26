@@ -21,6 +21,8 @@ import co.delric.voicture.presenters.DisplayProjectsPresenter
 import co.delric.voicture.ui.adapters.VoictureProjectDelegateAdapter
 import co.delric.voicture.ui.fragments.DisplaySavedProjectsFragment
 import com.github.ajalt.timberkt.Timber
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
 import kotlinx.android.synthetic.main.activity_display_projects.*
 import javax.inject.Inject
 
@@ -37,7 +39,7 @@ class DisplayProjectsActivity : AppCompatActivity(),
     DisplayProjectsView {
 
     companion object {
-        const val PICK_IMAGES = 1
+        private const val PICK_IMAGES = 1
     }
 
     @Inject
@@ -49,11 +51,7 @@ class DisplayProjectsActivity : AppCompatActivity(),
         setContentView(R.layout.activity_display_projects)
         setSupportActionBar(toolbar)
 
-        VoictureApplication.applicationComponent
-            .activityComponent()
-            .activityModule(ActivityModule(this))
-            .build()
-            .inject(this)
+        AndroidInjection.inject(this)
 
         createProjectFab.setOnClickListener { displayProjectsPresenter.onNewProjectClicked(this) }
         if (savedInstanceState == null) changeFragment(DisplaySavedProjectsFragment(), false)
